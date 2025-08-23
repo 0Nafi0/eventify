@@ -1,13 +1,37 @@
 // src/components/Navbar.jsx
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import logo from '../assets/images/logo.png'; // <-- add your logo file in src/assets/logo.png
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { User, LogOut, Menu, X } from 'lucide-react';
+import logo from '../assets/images/logo.png';
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const toggleUserMenu = () => {
+    setShowUserMenu(!showUserMenu);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setShowUserMenu(false);
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
+  const handleMenuClick = () => {
+    setIsMenuOpen(false);
   };
 
   const navbarStyles = {
@@ -35,6 +59,7 @@ function Navbar() {
     desktopButtons: {
       display: 'flex',
       gap: '0.8rem',
+      alignItems: 'center',
     },
     loginButton: {
       backgroundColor: 'transparent',
@@ -65,6 +90,69 @@ function Navbar() {
     signupButtonHover: {
       backgroundColor: 'transparent',
       color: '#f8b700',
+    },
+    userSection: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '1rem',
+      position: 'relative',
+    },
+    userAvatar: {
+      width: '40px',
+      height: '40px',
+      borderRadius: '50%',
+      backgroundColor: '#f8b700',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer',
+      border: '2px solid #f8b700',
+      transition: 'all 0.3s ease',
+    },
+    userAvatarHover: {
+      borderColor: '#fff',
+      transform: 'scale(1.05)',
+    },
+    userInfo: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      color: '#fff',
+    },
+    userName: {
+      fontSize: '0.9rem',
+      fontWeight: '600',
+      color: '#f8b700',
+    },
+    userRole: {
+      fontSize: '0.8rem',
+      color: '#ccc',
+      textTransform: 'capitalize',
+    },
+    userMenu: {
+      position: 'absolute',
+      top: '100%',
+      right: '0',
+      backgroundColor: '#fff',
+      borderRadius: '8px',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      padding: '0.5rem 0',
+      minWidth: '180px',
+      zIndex: '1001',
+      display: showUserMenu ? 'block' : 'none',
+    },
+    userMenuItem: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      padding: '0.75rem 1rem',
+      color: '#333',
+      textDecoration: 'none',
+      transition: 'background-color 0.2s ease',
+      cursor: 'pointer',
+    },
+    userMenuItemHover: {
+      backgroundColor: '#f8f9fa',
     },
     menuButton: {
       border: 'none',
@@ -115,8 +203,8 @@ function Navbar() {
       display: 'flex',
       flexDirection: 'column',
       gap: '1rem',
-      marginTop: '2rem',
-      paddingTop: '2rem',
+      marginTop: '1rem',
+      paddingTop: '1rem',
       borderTop: '2px solid rgba(248, 183, 0, 0.3)',
     },
     mobileLoginButton: {
@@ -166,37 +254,88 @@ function Navbar() {
           onClick={toggleMenu}
           aria-label="Toggle menu"
         >
-          ⋯
+          <Menu size={24} />
         </button>
 
-        {/* Centered logo instead of text */}
+        {/* Centered logo */}
         <Link to="/">
           <img src={logo} alt="Eventify Logo" style={navbarStyles.brandLogo} />
         </Link>
 
         {/* Desktop buttons */}
         <div style={navbarStyles.desktopButtons} className="d-none d-md-flex">
-          <Link 
-            to="/login" 
-            style={navbarStyles.loginButton}
-            onMouseOver={(e) => handleMouseOver(e, navbarStyles.loginButtonHover)}
-            onMouseOut={(e) => handleMouseOut(e, navbarStyles.loginButton)}
-          >
-            Login
-          </Link>
-          <Link 
-            to="/register-event" 
-            style={navbarStyles.signupButton}
-            onMouseOver={(e) => handleMouseOver(e, navbarStyles.signupButtonHover)}
-            onMouseOut={(e) => handleMouseOut(e, navbarStyles.signupButton)}
-          >
-            Sign Up
-          </Link>
+          {isAuthenticated ? (
+            <div style={navbarStyles.userSection}>
+              <div style={navbarStyles.userInfo}>
+                <span style={navbarStyles.userName}>
+                  {user?.firstName} {user?.lastName}
+                </span>
+                <span style={navbarStyles.userRole}>
+                  {user?.role === 'club_admin' ? 'Club Admin' : 'Student'}
+                </span>
+              </div>
+              
+              <div 
+                style={navbarStyles.userAvatar}
+                onClick={toggleUserMenu}
+                onMouseOver={(e) => handleMouseOver(e, navbarStyles.userAvatarHover)}
+                onMouseOut={(e) => handleMouseOut(e, navbarStyles.userAvatar)}
+              >
+                <User size={20} color="#000" />
+              </div>
+
+              {/* User Dropdown Menu */}
+              {showUserMenu && (
+                <div style={navbarStyles.userMenu}>
+                  <div 
+                    style={navbarStyles.userMenuItem}
+                    onClick={() => {
+                      navigate(user?.role === 'club_admin' ? '/admin-dashboard' : '/student-dashboard');
+                      setShowUserMenu(false);
+                    }}
+                    onMouseOver={(e) => handleMouseOver(e, navbarStyles.userMenuItemHover)}
+                    onMouseOut={(e) => handleMouseOut(e, {})}
+                  >
+                    <User size={16} />
+                    Dashboard
+                  </div>
+                  <div 
+                    style={navbarStyles.userMenuItem}
+                    onClick={handleLogout}
+                    onMouseOver={(e) => handleMouseOver(e, navbarStyles.userMenuItemHover)}
+                    onMouseOut={(e) => handleMouseOut(e, {})}
+                  >
+                    <LogOut size={16} />
+                    Sign Out
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <>
+              <Link 
+                to="/login" 
+                style={navbarStyles.loginButton}
+                onMouseOver={(e) => handleMouseOver(e, navbarStyles.loginButtonHover)}
+                onMouseOut={(e) => handleMouseOut(e, navbarStyles.loginButton)}
+              >
+                Login
+              </Link>
+              <Link 
+                to="/register" 
+                style={navbarStyles.signupButton}
+                onMouseOver={(e) => handleMouseOver(e, navbarStyles.signupButtonHover)}
+                onMouseOut={(e) => handleMouseOut(e, navbarStyles.signupButton)}
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Invisible spacer for layout balance */}
         <div style={{ width: '40px', visibility: 'hidden' }} className="d-md-none">
-          ⋯
+          <Menu size={24} />
         </div>
       </div>
 
@@ -208,34 +347,80 @@ function Navbar() {
             onClick={toggleMenu}
             aria-label="Close menu"
           >
-            ×
+            <X size={24} />
           </button>
           
-          <Link to="/" style={navbarStyles.mobileNavLink} onClick={toggleMenu}>Home</Link>
-          <Link to="/my-events" style={navbarStyles.mobileNavLink} onClick={toggleMenu}>My Events</Link>
+          <Link to="/" style={navbarStyles.mobileNavLink} onClick={handleMenuClick}>
+            Home
+          </Link>
           
-          {/* Mobile buttons */}
-          <div style={navbarStyles.mobileButtons} className="d-md-none">
-            <Link 
-              to="/login" 
-              style={navbarStyles.mobileLoginButton}
-              onMouseOver={(e) => handleMouseOver(e, navbarStyles.loginButtonHover)}
-              onMouseOut={(e) => handleMouseOut(e, navbarStyles.mobileLoginButton)}
-              onClick={toggleMenu}
-            >
-              Login
-            </Link>
-            <Link 
-              to="/register-event" 
-              style={navbarStyles.mobileSignupButton}
-              onMouseOver={(e) => handleMouseOver(e, navbarStyles.signupButtonHover)}
-              onMouseOut={(e) => handleMouseOut(e, navbarStyles.mobileSignupButton)}
-              onClick={toggleMenu}
-            >
-              Sign Up
-            </Link>
-          </div>
+          {isAuthenticated ? (
+            <>
+              <Link 
+                to={user?.role === 'club_admin' ? '/admin-dashboard' : '/student-dashboard'} 
+                style={navbarStyles.mobileNavLink} 
+                onClick={handleMenuClick}
+              >
+                Dashboard
+              </Link>
+              
+              {/* Mobile user info */}
+              <div style={{ padding: '1rem 0', borderBottom: '1px solid rgba(248, 183, 0, 0.3)' }}>
+                <div style={{ color: '#f8b700', fontSize: '1.1rem', fontWeight: '600' }}>
+                  {user?.firstName} {user?.lastName}
+                </div>
+                <div style={{ color: '#ccc', fontSize: '0.9rem' }}>
+                  {user?.role === 'club_admin' ? 'Club Admin' : 'Student'}
+                </div>
+              </div>
+              
+              {/* Mobile sign out */}
+              <div style={navbarStyles.mobileButtons}>
+                <button 
+                  style={navbarStyles.mobileLoginButton}
+                  onClick={() => {
+                    handleLogout();
+                    handleMenuClick();
+                  }}
+                >
+                  Sign Out
+                </button>
+              </div>
+            </>
+          ) : (
+            <div style={navbarStyles.mobileButtons}>
+              <Link 
+                to="/login" 
+                style={navbarStyles.mobileLoginButton}
+                onClick={handleMenuClick}
+              >
+                Login
+              </Link>
+              <Link 
+                to="/register" 
+                style={navbarStyles.mobileSignupButton}
+                onClick={handleMenuClick}
+              >
+                Sign Up
+              </Link>
+            </div>
+          )}
         </div>
+      )}
+
+      {/* Click outside to close user menu */}
+      {showUserMenu && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 1000
+          }}
+          onClick={() => setShowUserMenu(false)}
+        />
       )}
     </nav>
   );
