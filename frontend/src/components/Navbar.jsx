@@ -1,6 +1,7 @@
 // src/components/Navbar.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import logo from '../assets/images/logo.png'; // <-- add your logo file in src/assets/logo.png
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,15 +26,11 @@ function Navbar() {
       maxWidth: '1200px',
       margin: '0 auto',
     },
-    brand: {
-      fontWeight: '800',
-      fontSize: '1.8rem',
-      color: '#f8b700',
-      textDecoration: 'none',
+    brandLogo: {
+      height: '40px',
       position: 'absolute',
       left: '50%',
       transform: 'translateX(-50%)',
-      textTransform: 'lowercase',
     },
     desktopButtons: {
       display: 'flex',
@@ -163,7 +160,7 @@ function Navbar() {
   return (
     <nav style={navbarStyles.navbar}>
       <div style={navbarStyles.container}>
-        {/* Three dots menu button - ALWAYS VISIBLE on left */}
+        {/* Menu button on left */}
         <button 
           style={navbarStyles.menuButton}
           onClick={toggleMenu}
@@ -172,12 +169,12 @@ function Navbar() {
           ⋯
         </button>
 
-        {/* Centered brand */}
-        <Link to="/" style={navbarStyles.brand}>
-          eventify
+        {/* Centered logo instead of text */}
+        <Link to="/">
+          <img src={logo} alt="Eventify Logo" style={navbarStyles.brandLogo} />
         </Link>
 
-        {/* Desktop buttons - visible only on larger screens */}
+        {/* Desktop buttons */}
         <div style={navbarStyles.desktopButtons} className="d-none d-md-flex">
           <Link 
             to="/login" 
@@ -197,13 +194,13 @@ function Navbar() {
           </Link>
         </div>
 
-        {/* Invisible spacer for layout balance on mobile */}
+        {/* Invisible spacer for layout balance */}
         <div style={{ width: '40px', visibility: 'hidden' }} className="d-md-none">
           ⋯
         </div>
       </div>
 
-      {/* Mobile menu overlay */}
+      {/* Mobile menu */}
       {isMenuOpen && (
         <div style={navbarStyles.mobileMenu}>
           <button 
@@ -214,62 +211,10 @@ function Navbar() {
             ×
           </button>
           
-          <Link 
-            to="/" 
-            style={navbarStyles.mobileNavLink}
-            onMouseOver={(e) => handleMouseOver(e, navbarStyles.mobileNavLinkHover)}
-            onMouseOut={(e) => handleMouseOut(e, navbarStyles.mobileNavLink)}
-            onClick={toggleMenu}
-          >
-            Home
-          </Link>
-          <Link 
-            to="/charter" 
-            style={navbarStyles.mobileNavLink}
-            onMouseOver={(e) => handleMouseOver(e, navbarStyles.mobileNavLinkHover)}
-            onMouseOut={(e) => handleMouseOut(e, navbarStyles.mobileNavLink)}
-            onClick={toggleMenu}
-          >
-            Charter
-          </Link>
-          <Link 
-            to="/create-trip" 
-            style={navbarStyles.mobileNavLink}
-            onMouseOver={(e) => handleMouseOver(e, navbarStyles.mobileNavLinkHover)}
-            onMouseOut={(e) => handleMouseOut(e, navbarStyles.mobileNavLink)}
-            onClick={toggleMenu}
-          >
-            Create Trip
-          </Link>
-          <Link 
-            to="/find-rides" 
-            style={navbarStyles.mobileNavLink}
-            onMouseOver={(e) => handleMouseOver(e, navbarStyles.mobileNavLinkHover)}
-            onMouseOut={(e) => handleMouseOut(e, navbarStyles.mobileNavLink)}
-            onClick={toggleMenu}
-          >
-            Find Rides
-          </Link>
-          <Link 
-            to="/my-rides" 
-            style={navbarStyles.mobileNavLink}
-            onMouseOver={(e) => handleMouseOver(e, navbarStyles.mobileNavLinkHover)}
-            onMouseOut={(e) => handleMouseOut(e, navbarStyles.mobileNavLink)}
-            onClick={toggleMenu}
-          >
-            My Rides
-          </Link>
-          <Link 
-            to="/my-events" 
-            style={navbarStyles.mobileNavLink}
-            onMouseOver={(e) => handleMouseOver(e, navbarStyles.mobileNavLinkHover)}
-            onMouseOut={(e) => handleMouseOut(e, navbarStyles.mobileNavLink)}
-            onClick={toggleMenu}
-          >
-            My Events
-          </Link>
+          <Link to="/" style={navbarStyles.mobileNavLink} onClick={toggleMenu}>Home</Link>
+          <Link to="/my-events" style={navbarStyles.mobileNavLink} onClick={toggleMenu}>My Events</Link>
           
-          {/* Mobile buttons - only visible in mobile menu on mobile screens */}
+          {/* Mobile buttons */}
           <div style={navbarStyles.mobileButtons} className="d-md-none">
             <Link 
               to="/login" 

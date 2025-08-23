@@ -66,3 +66,46 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+.auth-card {
+  width: 100%;
+  max-width: 500px; /* bigger on PC */
+  padding: 40px;
+  border-radius: 15px;
+  background-color: #fff;
+  color: #000;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.btn-cta {
+  background-color: #00b96b;
+  border: none;
+  font-weight: bold;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.btn-cta:hover {
+  background-color: #009e5c;
+}
+
+.footerLink {
+  color: #00b96b;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footerLink:hover {
+  text-decoration: underline;
+}
+
+/* Make responsive */
+@media (max-width: 576px) {
+  .auth-card {
+    padding: 25px;
+    max-width: 90%;
+  }
+  .btn-cta {
+    font-size: 14px;
+    padding: 8px;
+  }
+}
