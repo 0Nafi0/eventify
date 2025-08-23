@@ -1,8 +1,7 @@
-// src/components/Navbar.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { User, LogOut, Menu, X } from 'lucide-react';
+import { User, LogOut, Menu, X, Settings, Calendar } from 'lucide-react';
 import logo from '../assets/images/logo.png';
 
 function Navbar() {
@@ -42,6 +41,7 @@ function Navbar() {
       fontFamily: "'Inter', sans-serif",
       position: 'relative',
       zIndex: '1000',
+      height: '70px', 
     },
     container: {
       display: 'flex',
@@ -49,12 +49,15 @@ function Navbar() {
       justifyContent: 'space-between',
       maxWidth: '1200px',
       margin: '0 auto',
+      height: '100%', 
+      position: 'relative', 
     },
     brandLogo: {
-      height: '40px',
+      height: '60px',
       position: 'absolute',
       left: '50%',
-      transform: 'translateX(-50%)',
+      top: '50%',
+      transform: 'translate(-50%, -50%)',
     },
     desktopButtons: {
       display: 'flex',
@@ -118,41 +121,65 @@ function Navbar() {
       flexDirection: 'column',
       alignItems: 'flex-start',
       color: '#fff',
+      paddingRight: '10px',
     },
     userName: {
-      fontSize: '0.9rem',
-      fontWeight: '600',
+      fontSize: '1rem',
+      fontWeight: '700',
       color: '#f8b700',
     },
     userRole: {
-      fontSize: '0.8rem',
+      fontSize: '0.9rem',
       color: '#ccc',
       textTransform: 'capitalize',
     },
+    // UPDATED POPUP MENU STYLES
     userMenu: {
       position: 'absolute',
-      top: '100%',
+      top: 'calc(100% + 10px)',
       right: '0',
-      backgroundColor: '#fff',
-      borderRadius: '8px',
-      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-      padding: '0.5rem 0',
-      minWidth: '180px',
+      backgroundColor: '#1a1a1a',
+      borderRadius: '12px',
+      boxShadow: '0 8px 25px rgba(0,0,0,0.3), 0 0 0 1px rgba(248, 183, 0, 0.2)',
+      padding: '0.75rem',
+      minWidth: '220px',
       zIndex: '1001',
       display: showUserMenu ? 'block' : 'none',
+      overflow: 'hidden',
+      border: '1px solid rgba(248, 183, 0, 0.15)',
+    },
+    userMenuHeader: {
+      padding: '0.75rem 1rem',
+      borderBottom: '1px solid rgba(248, 183, 0, 0.2)',
+      marginBottom: '0.5rem',
+    },
+    userMenuHeaderName: {
+      color: '#f8b700',
+      fontWeight: '600',
+      fontSize: '1rem',
+      marginBottom: '0.25rem',
+    },
+    userMenuHeaderEmail: {
+      color: '#aaa',
+      fontSize: '0.8rem',
     },
     userMenuItem: {
       display: 'flex',
       alignItems: 'center',
-      gap: '0.5rem',
-      padding: '0.75rem 1rem',
-      color: '#333',
+      gap: '0.75rem',
+      padding: '0.85rem 1rem',
+      color: '#ddd',
       textDecoration: 'none',
-      transition: 'background-color 0.2s ease',
+      transition: 'all 0.2s ease',
       cursor: 'pointer',
+      borderRadius: '8px',
+      fontSize: '0.95rem',
+      margin: '0.15rem 0',
     },
     userMenuItemHover: {
-      backgroundColor: '#f8f9fa',
+      backgroundColor: 'rgba(248, 183, 0, 0.15)',
+      color: '#f8b700',
+      transform: 'translateX(2px)',
     },
     menuButton: {
       border: 'none',
@@ -203,8 +230,8 @@ function Navbar() {
       display: 'flex',
       flexDirection: 'column',
       gap: '1rem',
-      marginTop: '1rem',
-      paddingTop: '1rem',
+      marginTop: '2rem',
+      paddingTop: '2rem',
       borderTop: '2px solid rgba(248, 183, 0, 0.3)',
     },
     mobileLoginButton: {
@@ -258,7 +285,7 @@ function Navbar() {
         </button>
 
         {/* Centered logo */}
-        <Link to="/">
+        <Link to="/" style={{position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)'}}>
           <img src={logo} alt="Eventify Logo" style={navbarStyles.brandLogo} />
         </Link>
 
@@ -284,9 +311,18 @@ function Navbar() {
                 <User size={20} color="#000" />
               </div>
 
-              {/* User Dropdown Menu */}
+              {/* UPDATED USER DROPDOWN MENU */}
               {showUserMenu && (
                 <div style={navbarStyles.userMenu}>
+                  <div style={navbarStyles.userMenuHeader}>
+                    <div style={navbarStyles.userMenuHeaderName}>
+                      {user?.firstName} {user?.lastName}
+                    </div>
+                    <div style={navbarStyles.userMenuHeaderEmail}>
+                      {user?.email}
+                    </div>
+                  </div>
+                  
                   <div 
                     style={navbarStyles.userMenuItem}
                     onClick={() => {
@@ -296,16 +332,43 @@ function Navbar() {
                     onMouseOver={(e) => handleMouseOver(e, navbarStyles.userMenuItemHover)}
                     onMouseOut={(e) => handleMouseOut(e, {})}
                   >
-                    <User size={16} />
+                    <User size={18} />
                     Dashboard
                   </div>
+                  
+                  <div 
+                    style={navbarStyles.userMenuItem}
+                    onClick={() => {
+                      navigate('/my-events');
+                      setShowUserMenu(false);
+                    }}
+                    onMouseOver={(e) => handleMouseOver(e, navbarStyles.userMenuItemHover)}
+                    onMouseOut={(e) => handleMouseOut(e, {})}
+                  >
+                    <Calendar size={18} />
+                    My Events
+                  </div>
+                  
+                  <div 
+                    style={navbarStyles.userMenuItem}
+                    onClick={() => {
+                      navigate('/settings');
+                      setShowUserMenu(false);
+                    }}
+                    onMouseOver={(e) => handleMouseOver(e, navbarStyles.userMenuItemHover)}
+                    onMouseOut={(e) => handleMouseOut(e, {})}
+                  >
+                    <Settings size={18} />
+                    Settings
+                  </div>
+                  
                   <div 
                     style={navbarStyles.userMenuItem}
                     onClick={handleLogout}
                     onMouseOver={(e) => handleMouseOver(e, navbarStyles.userMenuItemHover)}
                     onMouseOut={(e) => handleMouseOut(e, {})}
                   >
-                    <LogOut size={16} />
+                    <LogOut size={18} />
                     Sign Out
                   </div>
                 </div>
@@ -352,10 +415,6 @@ function Navbar() {
           
           <Link to="/" style={navbarStyles.mobileNavLink} onClick={handleMenuClick}>
             Home
-          </Link>
-          
-          <Link to="/events" style={navbarStyles.mobileNavLink} onClick={handleMenuClick}>
-            Events
           </Link>
           
           {isAuthenticated ? (
