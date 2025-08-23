@@ -3,6 +3,7 @@ import RootLayout from "./RootLayout";
 import HomePage from "./pages/HomePage.jsx";
 import RegisterEvent from "./pages/RegisterEvent.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
+import EventsPage from "./pages/EventsPage.jsx";
 import StudentDashboard from "./pages/StudentDashboard.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <LoginPage />,
+      },
+      {
+        path: "/events",
+        element: <EventsPage />,
       },
       {
         path: "/student-dashboard",

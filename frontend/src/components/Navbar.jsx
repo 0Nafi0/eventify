@@ -354,6 +354,10 @@ function Navbar() {
             Home
           </Link>
           
+          <Link to="/events" style={navbarStyles.mobileNavLink} onClick={handleMenuClick}>
+            Events
+          </Link>
+          
           {isAuthenticated ? (
             <>
               <Link 

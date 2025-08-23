@@ -10,7 +10,8 @@
     "check-ports": "node check-ports.js",
     "setup": "node setup.js",
     "test-simple": "node simple-test.js",
-    "test-auth": "node test-auth.js"
+    "test-auth": "node test-auth.js",
+    "sample-data": "node sample-data.js"
   },
   "keywords": [
     "event-management",
