@@ -1,0 +1,35 @@
+# Node.js
+node_modules/
+.env*
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Dependency directories
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm/
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Build artifacts (if applicable, e.g., for TypeScript or transpiled code)
+dist/
+build/
+
+# IDE specific files (e.g., VS Code)
+.vscode/
+.idea/
+
+# Operating System specific files
+.DS_Store
+Thumbs.db
