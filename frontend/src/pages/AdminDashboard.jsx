@@ -1,0 +1,13 @@
+// src/pages/AdminDashboard.jsx
+
+import React from 'react';
+
+function AdminDashboard() {
+  return (
+    <div>
+      <h1>Admin Dashboard</h1>
+    </div>
+  );
+}
+
+export default AdminDashboard;  {/* Make sure this is here */}
