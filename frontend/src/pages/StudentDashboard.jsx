@@ -1,24 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Badge, Alert, Spinner, Tabs, Tab } from 'react-bootstrap';
-import { Calendar, Clock, MapPin, Users, Tag, Bookmark, User, Settings, LogOut } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate, useLocation } from 'react-router-dom';
-import eventService from '../services/eventService';
-import EventCard from '../components/EventCard';
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Badge,
+  Alert,
+  Spinner,
+  Tabs,
+  Tab,
+} from "react-bootstrap";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Users,
+  Tag,
+  Bookmark,
+  User,
+  Settings,
+  LogOut,
+  Lock,
+} from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate, useLocation } from "react-router-dom";
+import eventService from "../services/eventService";
+import EventCard from "../components/EventCard";
+import EditProfileModal from "../components/EditProfileModal";
+import ChangePasswordModal from "../components/ChangePasswordModal";
+import ClubModal from "../components/ClubModal";
+import ScheduleModal from "../components/ScheduleModal";
 
 function StudentDashboard() {
   const location = useLocation();
-  const initialTab = location.state?.activeTab || 'overview';
+  const initialTab = location.state?.activeTab || "overview";
   const [activeTab, setActiveTab] = useState(initialTab);
   const [registeredEvents, setRegisteredEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+  const [showClubModal, setShowClubModal] = useState(false);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [showEditProfile, setShowEditProfile] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
   useEffect(() => {
-    if (user && user.role === 'student') {
+    if (user && user.role === "student") {
       fetchRegisteredEvents();
     }
   }, [user]);
@@ -27,7 +57,7 @@ function StudentDashboard() {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await eventService.getStudentRegisteredEvents();
       setRegisteredEvents(response.data.registrations);
     } catch (error) {
@@ -40,25 +70,29 @@ function StudentDashboard() {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     }
   };
 
   const handleUnregister = (eventId) => {
-    setRegisteredEvents(prev => prev.filter(reg => reg.event._id !== eventId));
+    setRegisteredEvents((prev) =>
+      prev.filter((reg) => reg.event._id !== eventId)
+    );
   };
 
   const getUpcomingEvents = () => {
-    return registeredEvents.filter(reg => 
-      reg.status === 'registered' && new Date(reg.event.date) > new Date()
+    return registeredEvents.filter(
+      (reg) =>
+        reg.status === "registered" && new Date(reg.event.date) > new Date()
     );
   };
 
   const getPastEvents = () => {
-    return registeredEvents.filter(reg => 
-      reg.status === 'registered' && new Date(reg.event.date) <= new Date()
+    return registeredEvents.filter(
+      (reg) =>
+        reg.status === "registered" && new Date(reg.event.date) <= new Date()
     );
   };
 
@@ -66,8 +100,8 @@ function StudentDashboard() {
     const total = registeredEvents.length;
     const upcoming = getUpcomingEvents().length;
     const past = getPastEvents().length;
-    const attended = registeredEvents.filter(reg => reg.attended).length;
-    
+    const attended = registeredEvents.filter((reg) => reg.attended).length;
+
     return { total, upcoming, past, attended };
   };
 
@@ -86,8 +120,8 @@ function StudentDashboard() {
                 Manage your events and stay updated with your schedule
               </p>
             </div>
-            <Button 
-              variant="outline-danger" 
+            <Button
+              variant="outline-danger"
               onClick={handleLogout}
               className="d-flex align-items-center gap-2"
             >
@@ -145,9 +179,9 @@ function StudentDashboard() {
         </Col>
       </Row>
 
-      <Tabs 
-        activeKey={activeTab} 
-        onSelect={(k) => setActiveTab(k)} 
+      <Tabs
+        activeKey={activeTab}
+        onSelect={(k) => setActiveTab(k)}
         className="mb-4"
       >
         <Tab eventKey="overview" title="Overview">
@@ -160,40 +194,70 @@ function StudentDashboard() {
                 <Card.Body>
                   <Row>
                     <Col md={6}>
-                      <p><strong>Name:</strong> {user?.firstName} {user?.lastName}</p>
-                      <p><strong>Email:</strong> {user?.email}</p>
+                      <p>
+                        <strong>Name:</strong> {user?.firstName}{" "}
+                        {user?.lastName}
+                      </p>
+                      <p>
+                        <strong>Email:</strong> {user?.email}
+                      </p>
                     </Col>
                     <Col md={6}>
-                      <p><strong>Student ID:</strong> {user?.studentId}</p>
-                      <p><strong>Department:</strong> {user?.department || 'Not specified'}</p>
+                      <p>
+                        <strong>Student ID:</strong> {user?.studentId}
+                      </p>
+                      <p>
+                        <strong>Department:</strong>{" "}
+                        {user?.department || "Not specified"}
+                      </p>
                     </Col>
                   </Row>
-                  <Button variant="outline-primary" size="sm">
-                    <Settings size={16} className="me-2" />
-                    Edit Profile
-                  </Button>
+                  <div className="d-flex gap-2">
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      onClick={() => setShowEditProfile(true)}
+                    >
+                      <Settings size={16} className="me-2" />
+                      Edit Profile
+                    </Button>
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      onClick={() => setShowChangePassword(true)}
+                    >
+                      <Lock size={16} className="me-2" />
+                      Change Password
+                    </Button>
+                  </div>
                 </Card.Body>
               </Card>
             </Col>
-            
+
             <Col lg={4} className="mb-4">
               <Card className="h-100 border-0 shadow-sm">
                 <Card.Header className="bg-success text-white">
                   <h5 className="mb-0">Quick Actions</h5>
                 </Card.Header>
                 <Card.Body className="d-grid gap-2">
-                  <Button 
-                    variant="outline-primary" 
-                    onClick={() => navigate('/events')}
+                  <Button
+                    variant="outline-primary"
+                    onClick={() => navigate("/events")}
                   >
                     <Calendar size={16} className="me-2" />
                     Browse Events
                   </Button>
-                  <Button variant="outline-success">
+                  <Button
+                    variant="outline-success"
+                    onClick={() => setShowClubModal(true)}
+                  >
                     <Tag size={16} className="me-2" />
                     Join Club
                   </Button>
-                  <Button variant="outline-info">
+                  <Button
+                    variant="outline-info"
+                    onClick={() => setShowScheduleModal(true)}
+                  >
                     <Clock size={16} className="me-2" />
                     My Schedule
                   </Button>
@@ -221,8 +285,13 @@ function StudentDashboard() {
                 <div className="mb-4">
                   <h4 className="mb-3">Upcoming Events</h4>
                   <Row>
-                    {getUpcomingEvents().map(registration => (
-                      <Col key={registration._id} lg={4} md={6} className="mb-3">
+                    {getUpcomingEvents().map((registration) => (
+                      <Col
+                        key={registration._id}
+                        lg={4}
+                        md={6}
+                        className="mb-3"
+                      >
                         <EventCard
                           event={registration.event}
                           onUnregister={handleUnregister}
@@ -239,8 +308,13 @@ function StudentDashboard() {
                 <div>
                   <h4 className="mb-3">Past Events</h4>
                   <Row>
-                    {getPastEvents().map(registration => (
-                      <Col key={registration._id} lg={4} md={6} className="mb-3">
+                    {getPastEvents().map((registration) => (
+                      <Col
+                        key={registration._id}
+                        lg={4}
+                        md={6}
+                        className="mb-3"
+                      >
                         <EventCard
                           event={registration.event}
                           showActions={false}
@@ -259,10 +333,7 @@ function StudentDashboard() {
                   <p className="text-muted">
                     Start exploring and register for events to see them here
                   </p>
-                  <Button 
-                    variant="primary" 
-                    onClick={() => navigate('/events')}
-                  >
+                  <Button variant="primary" onClick={() => navigate("/events")}>
                     Browse Events
                   </Button>
                 </div>
@@ -271,6 +342,22 @@ function StudentDashboard() {
           )}
         </Tab>
       </Tabs>
+
+      {/* Modals */}
+      <EditProfileModal
+        show={showEditProfile}
+        onHide={() => setShowEditProfile(false)}
+      />
+      <ChangePasswordModal
+        show={showChangePassword}
+        onHide={() => setShowChangePassword(false)}
+      />
+      <ClubModal show={showClubModal} onHide={() => setShowClubModal(false)} />
+      <ScheduleModal
+        show={showScheduleModal}
+        onHide={() => setShowScheduleModal(false)}
+        events={registeredEvents}
+      />
     </Container>
   );
 }

@@ -1,7 +1,41 @@
 const mongoose = require("mongoose");
 const Event = require("./models/Event");
 const User = require("./models/User");
+const Club = require("./models/Club");
 require("dotenv").config();
+
+const sampleClubs = [
+  {
+    name: "Tech Innovation Club",
+    description:
+      "A community of tech enthusiasts exploring emerging technologies including AI, blockchain, and IoT.",
+  },
+  {
+    name: "Cultural Exchange Society",
+    description:
+      "Celebrating diversity and promoting cultural understanding through events and activities.",
+  },
+  {
+    name: "Academic Excellence Club",
+    description:
+      "Supporting academic growth through workshops, study groups, and skill development sessions.",
+  },
+  {
+    name: "Sports & Recreation Club",
+    description:
+      "Promoting physical fitness and sportsmanship through various sporting activities and tournaments.",
+  },
+  {
+    name: "Entrepreneurship Club",
+    description:
+      "Fostering entrepreneurial spirit through mentorship, competitions, and networking events.",
+  },
+  {
+    name: "Environmental Club",
+    description:
+      "Working towards environmental conservation and sustainability awareness on campus.",
+  },
+];
 
 const sampleEvents = [
   {
@@ -156,11 +190,15 @@ const createSampleData = async () => {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log("✅ Connected to MongoDB");
 
-    // Check if events already exist
-    const existingEvents = await Event.countDocuments();
-    if (existingEvents > 0) {
+    // Check if events or clubs already exist
+    const [existingEvents, existingClubs] = await Promise.all([
+      Event.countDocuments(),
+      Club.countDocuments(),
+    ]);
+
+    if (existingEvents > 0 || existingClubs > 0) {
       console.log(
-        "⚠️  Events already exist in database. Skipping sample data creation."
+        "⚠️  Events or clubs already exist in database. Skipping sample data creation."
       );
       return;
     }
@@ -174,6 +212,15 @@ const createSampleData = async () => {
       return;
     }
 
+    // Create sample clubs
+    const clubsWithLeader = sampleClubs.map((club) => ({
+      ...club,
+      leaders: [clubAdmin._id],
+    }));
+
+    const createdClubs = await Club.insertMany(clubsWithLeader);
+    console.log(`✅ Created ${createdClubs.length} sample clubs`);
+
     // Create sample events
     const eventsWithCreator = sampleEvents.map((event) => ({
       ...event,
@@ -183,7 +230,13 @@ const createSampleData = async () => {
     const createdEvents = await Event.insertMany(eventsWithCreator);
     console.log(`✅ Created ${createdEvents.length} sample events`);
 
-    // Display created events
+    // Display created clubs and events
+    console.log("\nCreated Clubs:");
+    createdClubs.forEach((club) => {
+      console.log(`   - ${club.name}`);
+    });
+
+    console.log("\nCreated Events:");
     createdEvents.forEach((event) => {
       console.log(`   - ${event.title} (${event.category})`);
     });

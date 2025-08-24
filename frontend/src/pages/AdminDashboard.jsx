@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
+import EditProfileModal from "../components/EditProfileModal";
+import ChangePasswordModal from "../components/ChangePasswordModal";
 
 function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -14,6 +16,9 @@ function AdminDashboard() {
       console.error("Logout error:", error);
     }
   };
+
+  const [showEditProfile, setShowEditProfile] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
   return (
     <div className="admin-container bg-body text-body">
@@ -44,11 +49,10 @@ function AdminDashboard() {
           <h3>Event Management</h3>
           <Link to="/admin/events/new" style={styles.button}>
             Create New Event
-          </Link>{" "}
-          {/* Link to Create Event Page */}
+          </Link>
           <Link to="/admin/events" style={styles.button}>
             Manage Events
-          </Link>{" "}
+          </Link>
         </div>
 
         <div className="admin-card">
@@ -69,13 +73,33 @@ function AdminDashboard() {
 
         <div className="admin-card">
           <h3>Account</h3>
-          <button className="admin-btn">Edit Profile</button>
-          <button className="admin-btn">Change Password</button>
+          <button
+            className="admin-btn"
+            onClick={() => setShowEditProfile(true)}
+          >
+            Edit Profile
+          </button>
+          <button
+            className="admin-btn"
+            onClick={() => setShowChangePassword(true)}
+          >
+            Change Password
+          </button>
           <button className="admin-btn logout" onClick={handleLogout}>
             Sign Out
           </button>
         </div>
       </div>
+
+      {/* Modals */}
+      <EditProfileModal
+        show={showEditProfile}
+        onHide={() => setShowEditProfile(false)}
+      />
+      <ChangePasswordModal
+        show={showChangePassword}
+        onHide={() => setShowChangePassword(false)}
+      />
     </div>
   );
 }
