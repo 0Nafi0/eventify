@@ -1,21 +1,26 @@
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = "http://localhost:3001/api";
 
 class EventService {
   // Get upcoming events
   async getUpcomingEvents(params = {}) {
     try {
       const queryParams = new URLSearchParams();
-      
-      if (params.category) queryParams.append('category', params.category);
-      if (params.search) queryParams.append('search', params.search);
-      if (params.page) queryParams.append('page', params.page);
-      if (params.limit) queryParams.append('limit', params.limit);
+
+      if (params.category) queryParams.append("category", params.category);
+      if (params.search) queryParams.append("search", params.search);
+      if (params.page) queryParams.append("page", params.page);
+      if (params.limit) queryParams.append("limit", params.limit);
+      if (params.sort) {
+        const [field, order] = params.sort.split("-");
+        queryParams.append("sortField", field);
+        queryParams.append("sortOrder", order);
+      }
 
       const response = await fetch(`${API_BASE_URL}/events?${queryParams}`);
       const data = await response.json();
-      
+
       if (!response.ok) {
-        const error = new Error(data.message || 'Failed to fetch events');
+        const error = new Error(data.message || "Failed to fetch events");
         error.response = data;
         throw error;
       }
@@ -31,9 +36,9 @@ class EventService {
     try {
       const response = await fetch(`${API_BASE_URL}/events/${eventId}`);
       const data = await response.json();
-      
+
       if (!response.ok) {
-        const error = new Error(data.message || 'Failed to fetch event');
+        const error = new Error(data.message || "Failed to fetch event");
         error.response = data;
         throw error;
       }
@@ -49,21 +54,24 @@ class EventService {
     try {
       const token = this.getToken();
       if (!token) {
-        throw new Error('No token found');
+        throw new Error("No token found");
       }
 
-      const response = await fetch(`${API_BASE_URL}/events/${eventId}/register`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/events/${eventId}/register`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       const data = await response.json();
-      
+
       if (!response.ok) {
-        const error = new Error(data.message || 'Failed to register for event');
+        const error = new Error(data.message || "Failed to register for event");
         error.response = data;
         throw error;
       }
@@ -79,21 +87,26 @@ class EventService {
     try {
       const token = this.getToken();
       if (!token) {
-        throw new Error('No token found');
+        throw new Error("No token found");
       }
 
-      const response = await fetch(`${API_BASE_URL}/events/${eventId}/register`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/events/${eventId}/register`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       const data = await response.json();
-      
+
       if (!response.ok) {
-        const error = new Error(data.message || 'Failed to unregister from event');
+        const error = new Error(
+          data.message || "Failed to unregister from event"
+        );
         error.response = data;
         throw error;
       }
@@ -109,27 +122,32 @@ class EventService {
     try {
       const token = this.getToken();
       if (!token) {
-        throw new Error('No token found');
+        throw new Error("No token found");
       }
 
       const queryParams = new URLSearchParams();
-      
-      if (params.page) queryParams.append('page', params.page);
-      if (params.limit) queryParams.append('limit', params.limit);
-      if (params.status) queryParams.append('status', params.status);
 
-      const response = await fetch(`${API_BASE_URL}/events/student/registered?${queryParams}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
+      if (params.page) queryParams.append("page", params.page);
+      if (params.limit) queryParams.append("limit", params.limit);
+      if (params.status) queryParams.append("status", params.status);
+
+      const response = await fetch(
+        `${API_BASE_URL}/events/student/registered?${queryParams}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       const data = await response.json();
-      
+
       if (!response.ok) {
-        const error = new Error(data.message || 'Failed to fetch registered events');
+        const error = new Error(
+          data.message || "Failed to fetch registered events"
+        );
         error.response = data;
         throw error;
       }
@@ -145,14 +163,14 @@ class EventService {
     try {
       const token = this.getToken();
       if (!token) {
-        throw new Error('No token found');
+        throw new Error("No token found");
       }
 
       const response = await fetch(`${API_BASE_URL}/events/admin`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(eventData),
       });
@@ -161,7 +179,7 @@ class EventService {
 
       if (!response.ok) {
         // MODIFIED: Include the full data object in the error
-        const error = new Error(data.message || 'Failed to create event');
+        const error = new Error(data.message || "Failed to create event");
         error.response = data; // Attach the full response data to the error object
         throw error;
       }
@@ -177,14 +195,14 @@ class EventService {
     try {
       const token = this.getToken();
       if (!token) {
-        throw new Error('No token found');
+        throw new Error("No token found");
       }
 
       const response = await fetch(`${API_BASE_URL}/events/admin/${eventId}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(eventData),
       });
@@ -193,7 +211,7 @@ class EventService {
 
       if (!response.ok) {
         // MODIFIED: Include the full data object in the error
-        const error = new Error(data.message || 'Failed to update event');
+        const error = new Error(data.message || "Failed to update event");
         error.response = data;
         throw error;
       }
@@ -209,13 +227,13 @@ class EventService {
     try {
       const token = this.getToken();
       if (!token) {
-        throw new Error('No token found');
+        throw new Error("No token found");
       }
 
       const response = await fetch(`${API_BASE_URL}/events/admin/${eventId}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -223,7 +241,7 @@ class EventService {
 
       if (!response.ok) {
         // MODIFIED: Include the full data object in the error
-        const error = new Error(data.message || 'Failed to delete event');
+        const error = new Error(data.message || "Failed to delete event");
         error.response = data;
         throw error;
       }
@@ -239,20 +257,20 @@ class EventService {
     try {
       const token = this.getToken();
       if (!token) {
-        throw new Error('No token found');
+        throw new Error("No token found");
       }
 
       const response = await fetch(`${API_BASE_URL}/events/admin/my-events`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        const error = new Error(data.message || 'Failed to fetch admin events');
+        const error = new Error(data.message || "Failed to fetch admin events");
         error.response = data;
         throw error;
       }
@@ -268,20 +286,25 @@ class EventService {
     try {
       const token = this.getToken();
       if (!token) {
-        throw new Error('No token found');
+        throw new Error("No token found");
       }
 
-      const response = await fetch(`${API_BASE_URL}/events/admin/${eventId}/attendees`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/events/admin/${eventId}/attendees`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       const data = await response.json();
 
       if (!response.ok) {
-        const error = new Error(data.message || 'Failed to fetch event attendees');
+        const error = new Error(
+          data.message || "Failed to fetch event attendees"
+        );
         error.response = data;
         throw error;
       }
@@ -294,17 +317,17 @@ class EventService {
 
   // Token management
   getToken() {
-    return localStorage.getItem('eventify_token');
+    return localStorage.getItem("eventify_token");
   }
 
   // Format date for display
   formatDate(dateString) {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    return date.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   }
 
@@ -316,14 +339,14 @@ class EventService {
   // Get category display name
   getCategoryDisplayName(category) {
     const categoryMap = {
-      academic: 'Academic',
-      social: 'Social',
-      sports: 'Sports',
-      cultural: 'Cultural',
-      technical: 'Technical',
-      workshop: 'Workshop',
-      seminar: 'Seminar',
-      other: 'Other',
+      academic: "Academic",
+      social: "Social",
+      sports: "Sports",
+      cultural: "Cultural",
+      technical: "Technical",
+      workshop: "Workshop",
+      seminar: "Seminar",
+      other: "Other",
     };
     return categoryMap[category] || category;
   }
@@ -331,16 +354,16 @@ class EventService {
   // Get category color
   getCategoryColor(category) {
     const colorMap = {
-      academic: '#007bff',
-      social: '#28a745',
-      sports: '#ffc107',
-      cultural: '#dc3545',
-      technical: '#6f42c1',
-      workshop: '#fd7e14',
-      seminar: '#20c997',
-      other: '#6c757d',
+      academic: "#007bff",
+      social: "#28a745",
+      sports: "#ffc107",
+      cultural: "#dc3545",
+      technical: "#6f42c1",
+      workshop: "#fd7e14",
+      seminar: "#20c997",
+      other: "#6c757d",
     };
-    return colorMap[category] || '#6c757d';
+    return colorMap[category] || "#6c757d";
   }
 }
 

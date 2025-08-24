@@ -24,8 +24,23 @@ const EventsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState({});
   const [registeredEvents, setRegisteredEvents] = useState(new Set());
+  const [sortBy, setSortBy] = useState("date-asc");
+
+  // Clear registered events when user logs out
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setRegisteredEvents(new Set());
+    }
+  }, [isAuthenticated]);
 
   const { isAuthenticated, user } = useAuth();
+
+  const sortOptions = [
+    { value: "date-asc", label: "Date (Earliest First)" },
+    { value: "date-desc", label: "Date (Latest First)" },
+    { value: "popularity-desc", label: "Most Popular" },
+    { value: "popularity-asc", label: "Least Popular" },
+  ];
 
   const categories = [
     { value: "all", label: "All Categories" },
@@ -44,7 +59,14 @@ const EventsPage = () => {
     if (isAuthenticated && user?.role === "student") {
       fetchRegisteredEvents();
     }
-  }, [currentPage, selectedCategory, searchTerm, isAuthenticated, user]);
+  }, [
+    currentPage,
+    selectedCategory,
+    searchTerm,
+    sortBy,
+    isAuthenticated,
+    user,
+  ]);
 
   const fetchEvents = async () => {
     try {
@@ -56,6 +78,7 @@ const EventsPage = () => {
         limit: 9,
         category: selectedCategory !== "all" ? selectedCategory : undefined,
         search: searchTerm.trim() || undefined,
+        sort: sortBy,
       };
 
       const response = await eventService.getUpcomingEvents(params);
@@ -90,6 +113,11 @@ const EventsPage = () => {
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
+    setCurrentPage(1);
+  };
+
+  const handleSortChange = (sort) => {
+    setSortBy(sort);
     setCurrentPage(1);
   };
 
@@ -195,13 +223,13 @@ const EventsPage = () => {
   return (
     <Container className="py-5">
       {/* Header */}
-      <Row className="mb-4">
-        <Col>
-          <h1 className="display-5 fw-bold text-center mb-3">
-            <Calendar className="me-3 text-primary" />
+      <Row className="mb-4 py-3">
+        <Col xs={12} className="text-center">
+          <h1 className="display-5 fw-bold mb-3">
+            <Calendar className="me-2 text-primary d-none d-sm-inline" />
             Upcoming Events
           </h1>
-          <p className="text-muted text-center">
+          <p className="text-muted">
             Discover and register for exciting university events
           </p>
         </Col>
@@ -209,7 +237,7 @@ const EventsPage = () => {
 
       {/* Search and Filters */}
       <Row className="mb-4">
-        <Col lg={8} md={6} className="mb-3">
+        <Col lg={6} md={6} className="mb-3">
           <Form onSubmit={handleSearch}>
             <InputGroup>
               <InputGroup.Text>
@@ -227,7 +255,7 @@ const EventsPage = () => {
             </InputGroup>
           </Form>
         </Col>
-        <Col lg={4} md={6} className="mb-3">
+        <Col lg={3} md={6} className="mb-3">
           <Form.Select
             value={selectedCategory}
             onChange={(e) => handleCategoryChange(e.target.value)}
@@ -235,6 +263,18 @@ const EventsPage = () => {
             {categories.map((category) => (
               <option key={category.value} value={category.value}>
                 {category.label}
+              </option>
+            ))}
+          </Form.Select>
+        </Col>
+        <Col lg={3} md={6} className="mb-3">
+          <Form.Select
+            value={sortBy}
+            onChange={(e) => handleSortChange(e.target.value)}
+          >
+            {sortOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
               </option>
             ))}
           </Form.Select>
@@ -251,9 +291,9 @@ const EventsPage = () => {
       {/* Events Grid */}
       {events.length > 0 ? (
         <>
-          <Row>
+          <Row className="event-grid g-4">
             {events.map((event) => (
-              <Col key={event._id} lg={4} md={6} className="mb-4">
+              <Col key={event._id} xs={12} sm={6} lg={4}>
                 <EventCard
                   event={event}
                   onRegister={handleRegister}
