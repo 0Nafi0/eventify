@@ -22,8 +22,8 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(
   cors({
     origin: [
-      process.env.FRONTEND_URL || "http://localhost:3000",
-      "http://localhost:5173" // Vite dev server
+      process.env.FRONTEND_URL || "http://localhost:3001",
+      "http://localhost:5173", // Vite dev server
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -53,24 +53,26 @@ process.on("unhandledRejection", (err, promise) => {
 const startServer = () => {
   // Use port 3001 by default, or from environment variable
   const PORT = process.env.PORT || 3001;
-  
+
   console.log(`🚀 Starting Eventify Server on port ${PORT}...`);
-  
+
   const server = app.listen(PORT, () => {
     console.log(`✅ Eventify Server running on port ${PORT}`);
     console.log(`📊 Environment: ${process.env.NODE_ENV || "development"}`);
-    console.log(`🌐 Frontend URL: ${process.env.FRONTEND_URL || "http://localhost:3000"}`);
+    console.log(
+      `🌐 Frontend URL: ${process.env.FRONTEND_URL || "http://localhost:3000"}`
+    );
     console.log(`🔗 API URL: http://localhost:${PORT}/api`);
     console.log(`🔗 Health Check: http://localhost:${PORT}/api/health`);
   });
 
   // Handle server errors
-  server.on('error', (err) => {
-    if (err.code === 'EACCES') {
+  server.on("error", (err) => {
+    if (err.code === "EACCES") {
       console.error(`❌ Permission denied for port ${PORT}`);
       console.error(`💡 Try using a different port: PORT=3002`);
       process.exit(1);
-    } else if (err.code === 'EADDRINUSE') {
+    } else if (err.code === "EADDRINUSE") {
       console.error(`❌ Port ${PORT} is already in use`);
       console.error(`💡 Try using a different port: PORT=3002`);
       process.exit(1);
