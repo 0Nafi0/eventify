@@ -59,8 +59,7 @@ Backend:
 
 Deployment:
 
-- Vercel (Frontend)
-- Render (Backend)
+- Vercel 
 
 ---
 
