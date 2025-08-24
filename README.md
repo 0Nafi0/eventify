@@ -100,7 +100,6 @@ npm run dev
 
 ## Challenges & Advanced Features
 
-- Automatic Certificate Generator: Students can download participation certificates after events.
 - Event Recommendations: (Planned) Suggests relevant events based on user interests.
 - Event Search and Filters:(Planned) Search and filter events by category, date, or keyword.
 - Dark Mode/Light Mode Toggle:Switch between dark and light themes.
