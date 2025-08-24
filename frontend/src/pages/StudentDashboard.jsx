@@ -4,12 +4,14 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Badge, Alert, Spinner, Tabs, Tab } from 'react-bootstrap';
 import { Calendar, Clock, MapPin, Users, Tag, Bookmark, User, Settings, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import eventService from '../services/eventService';
 import EventCard from '../components/EventCard';
 
 function StudentDashboard() {
-  const [activeTab, setActiveTab] = useState('overview');
+  const location = useLocation();
+  const initialTab = location.state?.activeTab || 'overview';
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [registeredEvents, setRegisteredEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -18,10 +20,10 @@ function StudentDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (activeTab === 'events') {
+    if (user && user.role === 'student') {
       fetchRegisteredEvents();
     }
-  }, [activeTab]);
+  }, [user]);
 
   const fetchRegisteredEvents = async () => {
     try {

@@ -1,12 +1,33 @@
 // src/pages/HomePage.jsx
-import React from "react";
+import React, { useState, useEffect } from "react";
 import EventCard from "../components/EventCard.jsx";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import { Link } from "react-router-dom";
 import HeroImage from "../assets/images/iron_man.jpg";
+import eventService from "../services/eventService";
+import { Spinner, Alert } from "react-bootstrap";
 
 function HomePage() {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await eventService.getUpcomingEvents({ limit: 3 }); // Fetch top 3 events
+        setEvents(response.data.events);
+      } catch (err) {
+        setError(err.message || "Failed to fetch events.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEvents();
+  }, []);
   const homeStyles = {
     heroSection: {
       backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${HeroImage})`,
@@ -139,7 +160,7 @@ function HomePage() {
     },
     eventGrid: {
       display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+      gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
       gap: "2rem",
       marginTop: "2rem",
     },
@@ -209,14 +230,28 @@ function HomePage() {
         <div style={homeStyles.container}>
           <h2 style={homeStyles.sectionTitle}>Popular Events</h2>
           <div style={homeStyles.eventGrid}>
-            <EventCard />
-            <EventCard />
-            <EventCard />
+            {loading ? (
+              <div className="text-center w-100">
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Loading events...</span>
+                </Spinner>
+                <p className="mt-2">Loading events...</p>
+              </div>
+            ) : error ? (
+              <Alert variant="danger" className="w-100">{error}</Alert>
+            ) : events.length > 0 ? (
+              events.map((event) => (
+                <EventCard key={event._id} event={event} showActions={false} />
+              ))
+            ) : (
+              <div className="text-center w-100">
+                <h4>No upcoming events found.</h4>
+                <p>Check back later for exciting new events!</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
-
-      <Footer />
 
       {/* Animation styles */}
       <style>

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // Import Link
 
 function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -35,9 +35,9 @@ function AdminDashboard() {
         </div>
         
         <div style={styles.card}>
-          <h3>Club Management</h3>
-          <button style={styles.button}>Create Event</button>
-          <button style={styles.button}>Manage Events</button>
+          <h3>Event Management</h3> {/* Changed title */}
+          <Link to="/admin/events/new" style={styles.button}>Create New Event</Link> {/* Link to Create Event Page */}
+          <Link to="/admin/events" style={styles.button}>Manage Events</Link> {/* Link to Manage Events Page */}
           <button style={styles.button}>Club Members</button>
           <button style={styles.button}>Club Settings</button>
         </div>
@@ -112,6 +112,8 @@ const styles = {
     cursor: 'pointer',
     fontSize: '1rem',
     transition: 'background-color 0.3s',
+    textDecoration: 'none', // Added for Link component
+    textAlign: 'center', // Added for Link component
   },
   logoutButton: {
     display: 'block',
