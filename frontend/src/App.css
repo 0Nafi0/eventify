@@ -20,6 +20,41 @@
   color-scheme: dark;
 }
 
+/* Dark mode specific styles */
+[data-bs-theme="dark"] .text-muted {
+  color: var(--bs-secondary-text) !important;
+}
+
+[data-bs-theme="dark"] .card {
+  background-color: var(--bs-dark);
+  border-color: var(--bs-dark-border-subtle);
+}
+
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select,
+[data-bs-theme="dark"] .input-group-text {
+  background-color: var(--bs-dark);
+  border-color: var(--bs-dark-border-subtle);
+  color: var(--bs-body-color);
+}
+
+[data-bs-theme="dark"] .form-control:focus,
+[data-bs-theme="dark"] .form-select:focus {
+  background-color: var(--bs-dark);
+  border-color: var(--primary-color);
+  color: var(--bs-body-color);
+}
+
+[data-bs-theme="dark"] .table {
+  --bs-table-striped-bg: var(--bs-dark);
+  border-color: var(--bs-dark-border-subtle);
+}
+
+[data-bs-theme="dark"] .modal-content {
+  background-color: var(--bs-dark);
+  border-color: var(--bs-dark-border-subtle);
+}
+
 /* Global Styles */
 body {
   overflow-x: hidden;

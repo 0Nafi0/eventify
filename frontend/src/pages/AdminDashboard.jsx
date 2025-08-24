@@ -49,9 +49,6 @@ function AdminDashboard() {
           <Link to="/admin/events" style={styles.button}>
             Manage Events
           </Link>{" "}
-          {/* Link to Manage Events Page */}
-          <button style={styles.button}>Club Members</button>
-          <button style={styles.button}>Club Settings</button>
         </div>
 
         <div className="admin-card">

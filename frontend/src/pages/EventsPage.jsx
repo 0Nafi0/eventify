@@ -16,12 +16,11 @@ import eventService from "../services/eventService";
 import { useAuth } from "../context/AuthContext";
 
 const EventsPage = () => {
-  // ✅ Move useAuth() to the top of the component
   const { isAuthenticated, user } = useAuth();
 
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(false); // Changed to false for initial load
-  const [initialLoad, setInitialLoad] = useState(true); // Added for first load
+  const [loading, setLoading] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -29,7 +28,6 @@ const EventsPage = () => {
   const [pagination, setPagination] = useState({});
   const [registeredEvents, setRegisteredEvents] = useState(new Set());
   const [sortBy, setSortBy] = useState("date-asc");
-  const { isAuthenticated, user } = useAuth();
 
   // Clear registered events when user logs out
   useEffect(() => {
@@ -57,24 +55,7 @@ const EventsPage = () => {
     { value: "other", label: "Other" },
   ];
 
-  useEffect(() => {
-    const loadData = async () => {
-      await fetchEvents();
-      if (isAuthenticated && user?.role === "student") {
-        await fetchRegisteredEvents();
-      }
-    };
-    loadData();
-  }, [
-    currentPage,
-    selectedCategory,
-    searchTerm,
-    sortBy,
-    isAuthenticated,
-    user?.role,
-  ]);
-
-  const fetchEvents = async () => {
+  const loadEvents = React.useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -94,11 +75,13 @@ const EventsPage = () => {
       setError(error.message);
     } finally {
       setLoading(false);
-      setInitialLoad(false); // Clear initial load state after first fetch
+      setInitialLoad(false);
     }
-  };
+  }, [currentPage, selectedCategory, searchTerm, sortBy]);
 
-  const fetchRegisteredEvents = async () => {
+  const loadRegisteredEvents = React.useCallback(async () => {
+    if (!isAuthenticated || user?.role !== "student") return;
+
     try {
       const response = await eventService.getStudentRegisteredEvents();
       const registeredIds = new Set(
@@ -110,12 +93,17 @@ const EventsPage = () => {
     } catch (error) {
       console.error("Failed to fetch registered events:", error);
     }
-  };
+  }, [isAuthenticated, user?.role]);
 
-  const handleSearch = (e) => {
+  useEffect(() => {
+    loadEvents();
+    loadRegisteredEvents();
+  }, [loadEvents, loadRegisteredEvents]);
+
+  const handleSearch = async (e) => {
     e.preventDefault();
     setCurrentPage(1);
-    fetchEvents();
+    await loadEvents();
   };
 
   const handleCategoryChange = (category) => {
