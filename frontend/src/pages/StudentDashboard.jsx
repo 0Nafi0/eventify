@@ -248,13 +248,6 @@ function StudentDashboard() {
                     Browse Events
                   </Button>
                   <Button
-                    variant="outline-success"
-                    onClick={() => setShowClubModal(true)}
-                  >
-                    <Tag size={16} className="me-2" />
-                    Join Club
-                  </Button>
-                  <Button
                     variant="outline-info"
                     onClick={() => setShowScheduleModal(true)}
                   >
