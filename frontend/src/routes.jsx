@@ -8,6 +8,12 @@ import StudentDashboard from "./pages/StudentDashboard.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
+// Admin Pages - NEW IMPORTS
+import ManageEventsPage from "./pages/admin/ManageEventsPage.jsx";
+import CreateEventPage from "./pages/admin/CreateEventPage.jsx";
+import EditEventPage from "./pages/admin/EditEventPage.jsx";
+import ViewAttendeesPage from "./pages/admin/ViewAttendeesPage.jsx";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -42,6 +48,39 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute requiredRole="club_admin">
             <AdminDashboard />
+          </ProtectedRoute>
+        ),
+      },
+      // Admin Event Management Routes - NEW
+      {
+        path: "/admin/events",
+        element: (
+          <ProtectedRoute requiredRole="club_admin">
+            <ManageEventsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/events/new",
+        element: (
+          <ProtectedRoute requiredRole="club_admin">
+            <CreateEventPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/events/edit/:id",
+        element: (
+          <ProtectedRoute requiredRole="club_admin">
+            <EditEventPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/events/:id/attendees",
+        element: (
+          <ProtectedRoute requiredRole="club_admin">
+            <ViewAttendeesPage />
           </ProtectedRoute>
         ),
       },

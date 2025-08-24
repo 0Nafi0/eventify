@@ -15,7 +15,9 @@ class EventService {
       const data = await response.json();
       
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch events');
+        const error = new Error(data.message || 'Failed to fetch events');
+        error.response = data;
+        throw error;
       }
 
       return data;
@@ -31,7 +33,9 @@ class EventService {
       const data = await response.json();
       
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch event');
+        const error = new Error(data.message || 'Failed to fetch event');
+        error.response = data;
+        throw error;
       }
 
       return data;
@@ -59,7 +63,9 @@ class EventService {
       const data = await response.json();
       
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to register for event');
+        const error = new Error(data.message || 'Failed to register for event');
+        error.response = data;
+        throw error;
       }
 
       return data;
@@ -87,7 +93,9 @@ class EventService {
       const data = await response.json();
       
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to unregister from event');
+        const error = new Error(data.message || 'Failed to unregister from event');
+        error.response = data;
+        throw error;
       }
 
       return data;
@@ -121,7 +129,161 @@ class EventService {
       const data = await response.json();
       
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch registered events');
+        const error = new Error(data.message || 'Failed to fetch registered events');
+        error.response = data;
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Admin: Create a new event
+  async createEvent(eventData) {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/events/admin`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(eventData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // MODIFIED: Include the full data object in the error
+        const error = new Error(data.message || 'Failed to create event');
+        error.response = data; // Attach the full response data to the error object
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Admin: Update an event
+  async updateEvent(eventId, eventData) {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/events/admin/${eventId}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(eventData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // MODIFIED: Include the full data object in the error
+        const error = new Error(data.message || 'Failed to update event');
+        error.response = data;
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Admin: Delete an event (soft delete)
+  async deleteEvent(eventId) {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/events/admin/${eventId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // MODIFIED: Include the full data object in the error
+        const error = new Error(data.message || 'Failed to delete event');
+        error.response = data;
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Admin: Get events created by the current admin
+  async getAdminEvents() {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/events/admin/my-events`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        const error = new Error(data.message || 'Failed to fetch admin events');
+        error.response = data;
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Admin: Get attendees for a specific event
+  async getEventAttendees(eventId) {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/events/admin/${eventId}/attendees`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        const error = new Error(data.message || 'Failed to fetch event attendees');
+        error.response = data;
+        throw error;
       }
 
       return data;

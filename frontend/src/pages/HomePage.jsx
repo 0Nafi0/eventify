@@ -216,8 +216,6 @@ function HomePage() {
         </div>
       </section>
 
-      <Footer />
-
       {/* Animation styles */}
       <style>
         {`

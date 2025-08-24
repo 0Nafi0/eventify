@@ -104,8 +104,7 @@ const getEventById = async (req, res) => {
     }
 
     // Add virtual fields
-    const eventWithVirtuals = {
-      ...event,
+    const eventWithVirtuals = { ...event,
       isFull: event.currentAttendees >= event.maxAttendees,
       isRegistrationOpen: new Date() < new Date(event.registrationDeadline),
       isUpcoming: new Date() < new Date(event.date),
@@ -119,14 +118,14 @@ const getEventById = async (req, res) => {
         status: { $in: ["registered", "attended"] },
       });
 
-      eventWithVirtuals.userRegistration = registration
-        ? {
-            id: registration._id,
-            status: registration.status,
-            registrationDate: registration.registrationDate,
-            attended: registration.attended,
-          }
-        : null;
+      eventWithVirtuals.userRegistration = registration ?
+        {
+          id: registration._id,
+          status: registration.status,
+          registrationDate: registration.registrationDate,
+          attended: registration.attended,
+        } :
+        null;
     }
 
     res.status(200).json({
@@ -397,10 +396,220 @@ const getStudentRegisteredEvents = async (req, res) => {
   }
 };
 
+// @desc    Create a new event
+// @route   POST /api/events/admin
+// @access  Private (Club Admins only)
+const createEvent = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+
+  try {
+    const {
+      title,
+      description,
+      date,
+      startTime,
+      endTime,
+      location,
+      maxAttendees,
+      category,
+      registrationDeadline,
+      tags,
+      requirements,
+      contactInfo,
+      image,
+    } = req.body;
+
+    const event = new Event({
+      title,
+      description,
+      date,
+      startTime,
+      endTime,
+      location,
+      maxAttendees,
+      category,
+      registrationDeadline,
+      tags,
+      requirements,
+      contactInfo,
+      image,
+      createdBy: req.user._id,
+      clubName: req.user.clubName,
+      department: req.user.department,
+    });
+
+    const createdEvent = await event.save();
+    res.status(201).json({
+      success: true,
+      message: "Event created successfully",
+      data: createdEvent,
+    });
+  } catch (error) {
+    console.error("Error creating event:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to create event",
+      error: error.message,
+    });
+  }
+};
+
+// @desc    Update an event
+// @route   PUT /api/events/admin/:id
+// // @access  Private (Club Admins only)
+const updateEvent = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+
+  try {
+    const { id } = req.params;
+    const event = await Event.findById(id);
+
+    if (!event) {
+      return res.status(404).json({ success: false, message: "Event not found" });
+    }
+
+    // Check if the user is the creator of the event
+    if (event.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "User not authorized to update this event",
+      });
+    }
+
+    const updatedEvent = await Event.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Event updated successfully",
+      data: updatedEvent,
+    });
+  } catch (error) {
+    console.error("Error updating event:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update event",
+      error: error.message,
+    });
+  }
+};
+
+// @desc    Delete an event (soft delete)
+// @route   DELETE /api/events/admin/:id
+// @access  Private (Club Admins only)
+const deleteEvent = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const event = await Event.findById(id);
+
+    if (!event) {
+      return res.status(404).json({ success: false, message: "Event not found" });
+    }
+
+    if (event.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "User not authorized to delete this event",
+      });
+    }
+
+    // Soft delete by setting isActive to false
+    event.isActive = false;
+    await event.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Event deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete event",
+      error: error.message,
+    });
+  }
+};
+
+// @desc    Get events for a specific club admin
+// @route   GET /api/events/admin/my-events
+// @access  Private (Club Admins only)
+const getClubAdminEvents = async (req, res) => {
+  try {
+    const events = await Event.find({ createdBy: req.user._id }).sort({ date: -1 });
+    res.status(200).json({
+      success: true,
+      message: "Admin events retrieved successfully",
+      data: {
+        events,
+      },
+    });
+  } catch (error) {
+    console.error("Error getting admin events:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve admin events",
+      error: error.message,
+    });
+  }
+};
+
+// @desc    Get attendees for an event
+// @route   GET /api/events/admin/:id/attendees
+// @access  Private (Club Admins only)
+const getEventAttendees = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const event = await Event.findById(id);
+
+    if (!event) {
+      return res.status(404).json({ success: false, message: "Event not found" });
+    }
+
+    if (event.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "User not authorized to view attendees for this event",
+      });
+    }
+
+    const registrations = await EventRegistration.find({ event: id, status: 'registered' })
+      .populate('student', 'firstName lastName email studentId department');
+
+    res.status(200).json({
+      success: true,
+      message: "Attendees retrieved successfully",
+      data: {
+        attendees: registrations,
+      },
+    });
+  } catch (error) {
+    console.error("Error getting event attendees:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve event attendees",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getUpcomingEvents,
   getEventById,
   registerForEvent,
   unregisterFromEvent,
   getStudentRegisteredEvents,
+  createEvent,
+  updateEvent,
+  deleteEvent,
+  getClubAdminEvents,
+  getEventAttendees,
 };
