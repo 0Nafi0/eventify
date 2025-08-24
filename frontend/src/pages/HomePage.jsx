@@ -7,11 +7,28 @@ import { Link } from "react-router-dom";
 import HeroImage from "../assets/images/iron_man.jpg";
 import eventService from "../services/eventService";
 import { Spinner, Alert } from "react-bootstrap";
+import { useAuth } from "../context/AuthContext";
 
 function HomePage() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [registeredEvents, setRegisteredEvents] = useState(new Set());
+  const { isAuthenticated, user } = useAuth();
+
+  const fetchRegisteredEvents = async () => {
+    try {
+      const response = await eventService.getStudentRegisteredEvents();
+      const registeredIds = new Set(
+        response.data.registrations
+          .filter((reg) => reg.status === "registered")
+          .map((reg) => reg.event._id)
+      );
+      setRegisteredEvents(registeredIds);
+    } catch (error) {
+      console.error("Failed to fetch registered events:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -27,7 +44,11 @@ function HomePage() {
       }
     };
     fetchEvents();
-  }, []);
+
+    if (isAuthenticated && user?.role === "student") {
+      fetchRegisteredEvents();
+    }
+  }, [isAuthenticated, user]);
   const homeStyles = {
     heroSection: {
       backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${HeroImage})`,
@@ -179,6 +200,32 @@ function HomePage() {
     });
   };
 
+  const handleRegister = (eventId) => {
+    setRegisteredEvents((prev) => new Set([...prev, eventId]));
+    setEvents((prev) =>
+      prev.map((event) =>
+        event._id === eventId
+          ? { ...event, currentAttendees: event.currentAttendees + 1 }
+          : event
+      )
+    );
+  };
+
+  const handleUnregister = (eventId) => {
+    setRegisteredEvents((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(eventId);
+      return newSet;
+    });
+    setEvents((prev) =>
+      prev.map((event) =>
+        event._id === eventId
+          ? { ...event, currentAttendees: event.currentAttendees - 1 }
+          : event
+      )
+    );
+  };
+
   const scrollDown = () => {
     window.scrollTo({
       top: window.innerHeight,
@@ -238,10 +285,19 @@ function HomePage() {
                 <p className="mt-2">Loading events...</p>
               </div>
             ) : error ? (
-              <Alert variant="danger" className="w-100">{error}</Alert>
+              <Alert variant="danger" className="w-100">
+                {error}
+              </Alert>
             ) : events.length > 0 ? (
               events.map((event) => (
-                <EventCard key={event._id} event={event} showActions={false} />
+                <EventCard
+                  key={event._id}
+                  event={event}
+                  showActions={isAuthenticated && user?.role === "student"}
+                  isRegistered={registeredEvents.has(event._id)}
+                  onRegister={handleRegister}
+                  onUnregister={handleUnregister}
+                />
               ))
             ) : (
               <div className="text-center w-100">
