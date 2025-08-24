@@ -26,6 +26,13 @@ const EventsPage = () => {
   const [registeredEvents, setRegisteredEvents] = useState(new Set());
   const [sortBy, setSortBy] = useState("date-asc");
 
+  // Clear registered events when user logs out
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setRegisteredEvents(new Set());
+    }
+  }, [isAuthenticated]);
+
   const { isAuthenticated, user } = useAuth();
 
   const sortOptions = [

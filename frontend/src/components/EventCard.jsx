@@ -80,6 +80,20 @@ const EventCard = ({
     );
   };
 
+  // Don't show registered badge if not authenticated
+  const renderStatusBadge = () => {
+    if (!showActions && !isRegistered) {
+      return event.isFull ? (
+        <Badge bg="danger">Full</Badge>
+      ) : !event.isRegistrationOpen ? (
+        <Badge bg="warning">Registration Closed</Badge>
+      ) : (
+        <Badge bg="primary">Open</Badge>
+      );
+    }
+    return getStatusBadge();
+  };
+
   return (
     <Card className="event-card h-100 shadow-sm">
       {event.image && (
@@ -93,7 +107,7 @@ const EventCard = ({
 
       <Card.Body className="d-flex flex-column">
         <div className="mb-2">
-          {getStatusBadge()}
+          {renderStatusBadge()}
           <Badge
             bg="light"
             text="dark"

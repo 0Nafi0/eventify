@@ -23,7 +23,8 @@ function Navbar() {
     try {
       await logout();
       setShowUserMenu(false);
-      navigate("/");
+      // Force a page refresh after logout to clear all states
+      window.location.href = "/";
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -35,13 +36,15 @@ function Navbar() {
 
   const navbarStyles = {
     navbar: {
-      backgroundColor: "#000000",
-      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+      background: "linear-gradient(to right, #000000, #1a1a1a)",
+      boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
       padding: "0.8rem 1.5rem",
       fontFamily: "'Inter', sans-serif",
       position: "relative",
       zIndex: "1000",
-      height: "70px",
+      height: "75px",
+      borderBottom: "1px solid rgba(248, 183, 0, 0.1)",
+      animation: "navbarFadeIn 0.5s ease-out",
     },
     container: {
       display: "flex",
@@ -51,13 +54,18 @@ function Navbar() {
       margin: "0 auto",
       height: "100%",
       position: "relative",
+      padding: "0 1rem",
+      animation: "navbarFadeIn 0.5s ease-out",
     },
     brandLogo: {
-      height: "60px",
+      height: "55px",
       position: "absolute",
       left: "50%",
       top: "50%",
       transform: "translate(-50%, -50%)",
+      transition: "transform 0.3s ease",
+      animation: "logoPopIn 0.6s ease-out",
+      filter: "drop-shadow(0 2px 4px rgba(248, 183, 0, 0.2))",
     },
     desktopButtons: {
       display: "flex",
@@ -65,34 +73,44 @@ function Navbar() {
       alignItems: "center",
     },
     loginButton: {
-      backgroundColor: "transparent",
-      border: "2px solid #f8b700",
+      background: "transparent",
+      border: "2px solid rgba(248, 183, 0, 0.8)",
       color: "#f8b700",
-      borderRadius: "25px",
-      padding: "0.5rem 1.2rem",
+      borderRadius: "30px",
+      padding: "0.6rem 1.4rem",
       textDecoration: "none",
-      transition: "all 0.3s ease",
+      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
       fontWeight: "600",
-      fontSize: "0.9rem",
+      fontSize: "0.95rem",
+      boxShadow: "0 0 15px rgba(248, 183, 0, 0.1)",
+      animation: "buttonSlideIn 0.5s ease-out",
+      backdropFilter: "blur(8px)",
     },
     loginButtonHover: {
-      backgroundColor: "#f8b700",
+      background: "linear-gradient(135deg, #f8b700, #ffd700)",
       color: "#000",
+      transform: "translateY(-2px)",
+      boxShadow: "0 5px 15px rgba(248, 183, 0, 0.3)",
     },
     signupButton: {
-      backgroundColor: "#f8b700",
-      border: "2px solid #f8b700",
+      background: "linear-gradient(135deg, #f8b700, #ffd700)",
+      border: "2px solid transparent",
       color: "#000",
-      borderRadius: "25px",
-      padding: "0.5rem 1.2rem",
+      borderRadius: "30px",
+      padding: "0.6rem 1.4rem",
       textDecoration: "none",
-      transition: "all 0.3s ease",
+      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
       fontWeight: "600",
-      fontSize: "0.9rem",
+      fontSize: "0.95rem",
+      boxShadow: "0 4px 15px rgba(248, 183, 0, 0.3)",
+      animation: "buttonSlideIn 0.5s ease-out 0.1s",
     },
     signupButtonHover: {
-      backgroundColor: "transparent",
+      background: "transparent",
+      borderColor: "#f8b700",
       color: "#f8b700",
+      transform: "translateY(-2px)",
+      boxShadow: "0 5px 20px rgba(248, 183, 0, 0.2)",
     },
     userSection: {
       display: "flex",
@@ -101,20 +119,23 @@ function Navbar() {
       position: "relative",
     },
     userAvatar: {
-      width: "40px",
-      height: "40px",
+      width: "42px",
+      height: "42px",
       borderRadius: "50%",
-      backgroundColor: "#f8b700",
+      background: "linear-gradient(135deg, #f8b700, #ffd700)",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
       cursor: "pointer",
-      border: "2px solid #f8b700",
-      transition: "all 0.3s ease",
+      border: "2px solid rgba(248, 183, 0, 0.3)",
+      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+      boxShadow: "0 2px 10px rgba(248, 183, 0, 0.2)",
+      animation: "avatarPulse 2s infinite",
     },
     userAvatarHover: {
-      borderColor: "#fff",
-      transform: "scale(1.05)",
+      borderColor: "rgba(255, 255, 255, 0.8)",
+      transform: "scale(1.08)",
+      boxShadow: "0 4px 15px rgba(248, 183, 0, 0.4)",
     },
     userInfo: {
       display: "flex",
@@ -136,17 +157,20 @@ function Navbar() {
     // UPDATED POPUP MENU STYLES
     userMenu: {
       position: "absolute",
-      top: "calc(100% + 10px)",
+      top: "calc(100% + 12px)",
       right: "0",
-      backgroundColor: "#1a1a1a",
-      borderRadius: "12px",
-      boxShadow: "0 8px 25px rgba(0,0,0,0.3), 0 0 0 1px rgba(248, 183, 0, 0.2)",
+      background: "linear-gradient(to bottom, #1a1a1a, #0d0d0d)",
+      borderRadius: "16px",
+      boxShadow:
+        "0 10px 30px rgba(0,0,0,0.4), 0 0 0 1px rgba(248, 183, 0, 0.2)",
       padding: "0.75rem",
-      minWidth: "220px",
+      minWidth: "240px",
       zIndex: "1001",
       display: showUserMenu ? "block" : "none",
       overflow: "hidden",
       border: "1px solid rgba(248, 183, 0, 0.15)",
+      backdropFilter: "blur(10px)",
+      animation: "menuSlideIn 0.3s ease-out",
     },
     userMenuHeader: {
       padding: "0.75rem 1rem",
@@ -185,25 +209,34 @@ function Navbar() {
     },
     menuButton: {
       border: "none",
-      backgroundColor: "transparent",
+      background:
+        "linear-gradient(135deg, rgba(248, 183, 0, 0.1), rgba(248, 183, 0, 0.05))",
       fontSize: "1.8rem",
       cursor: "pointer",
       color: "#f8b700",
-      padding: "0.3rem",
-      borderRadius: "4px",
+      padding: "0.5rem",
+      borderRadius: "12px",
       display: "flex",
+      transition: "all 0.3s ease",
+      boxShadow: "0 2px 8px rgba(248, 183, 0, 0.1)",
+      backdropFilter: "blur(4px)",
     },
     mobileMenu: {
       position: "fixed",
       top: "0",
       left: "0",
-      width: "100%",
-      height: "100%",
-      backgroundColor: "rgba(0, 0, 0, 0.95)",
+      width: "100vw",
+      height: "100vh",
+      background:
+        "linear-gradient(135deg, rgba(0, 0, 0, 0.97), rgba(26, 26, 26, 0.97))",
       padding: "5rem 2rem 2rem",
       display: isMenuOpen ? "block" : "none",
-      zIndex: "999",
+      zIndex: "1500",
       overflowY: "auto",
+      backdropFilter: "blur(10px)",
+      animation: "mobileMenuSlide 0.3s ease-out",
+      maxHeight: "100vh",
+      overflowX: "hidden",
     },
     closeButton: {
       position: "absolute",
@@ -275,275 +308,365 @@ function Navbar() {
   };
 
   return (
-    <nav style={navbarStyles.navbar}>
-      <div style={navbarStyles.container}>
-        {/* Menu button on left */}
-        <button
-          style={navbarStyles.menuButton}
-          onClick={toggleMenu}
-          aria-label="Toggle menu"
-        >
-          <Menu size={24} />
-        </button>
+    <>
+      <style>
+        {`
+          @keyframes navbarFadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(-10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
 
-        {/* Centered logo */}
-        <Link
-          to="/"
-          style={{
-            position: "absolute",
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          <img src={logo} alt="Eventify Logo" style={navbarStyles.brandLogo} />
-        </Link>
+          @keyframes logoPopIn {
+            0% {
+              opacity: 0;
+              transform: translate(-50%, -50%) scale(0.8);
+            }
+            50% {
+              transform: translate(-50%, -50%) scale(1.1);
+            }
+            100% {
+              opacity: 1;
+              transform: translate(-50%, -50%) scale(1);
+            }
+          }
 
-        {/* Desktop buttons */}
-        <div style={navbarStyles.desktopButtons} className="d-none d-md-flex">
-          {isAuthenticated ? (
-            <div style={navbarStyles.userSection}>
-              <div style={navbarStyles.userInfo}>
-                <span style={navbarStyles.userName}>
-                  {user?.firstName} {user?.lastName}
-                </span>
-                <span style={navbarStyles.userRole}>
-                  {user?.role === "club_admin" ? "Club Admin" : "Student"}
-                </span>
-              </div>
+          @keyframes buttonSlideIn {
+            from {
+              opacity: 0;
+              transform: translateX(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
 
-              <div
-                style={navbarStyles.userAvatar}
-                onClick={toggleUserMenu}
-                onMouseOver={(e) =>
-                  handleMouseOver(e, navbarStyles.userAvatarHover)
-                }
-                onMouseOut={(e) => handleMouseOut(e, navbarStyles.userAvatar)}
-              >
-                <User size={20} color="#000" />
-              </div>
+          @keyframes avatarPulse {
+            0% {
+              box-shadow: 0 0 0 0 rgba(248, 183, 0, 0.4);
+            }
+            70% {
+              box-shadow: 0 0 0 10px rgba(248, 183, 0, 0);
+            }
+            100% {
+              box-shadow: 0 0 0 0 rgba(248, 183, 0, 0);
+            }
+          }
 
-              {/* UPDATED USER DROPDOWN MENU */}
-              {showUserMenu && (
-                <div style={navbarStyles.userMenu}>
-                  <div style={navbarStyles.userMenuHeader}>
-                    <div style={navbarStyles.userMenuHeaderName}>
-                      {user?.firstName} {user?.lastName}
-                    </div>
-                    <div style={navbarStyles.userMenuHeaderEmail}>
-                      {user?.email}
-                    </div>
-                  </div>
+          @keyframes menuSlideIn {
+            from {
+              opacity: 0;
+              transform: translateY(-10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
 
-                  <div
-                    style={navbarStyles.userMenuItem}
-                    onClick={() => {
-                      navigate(
-                        user?.role === "club_admin"
-                          ? "/admin-dashboard"
-                          : "/student-dashboard"
-                      );
-                      setShowUserMenu(false);
-                    }}
-                    onMouseOver={(e) =>
-                      handleMouseOver(e, navbarStyles.userMenuItemHover)
-                    }
-                    onMouseOut={(e) =>
-                      handleMouseOut(e, navbarStyles.userMenuItem)
-                    }
-                  >
-                    <User size={18} />
-                    Dashboard
-                  </div>
+          @keyframes mobileMenuSlide {
+            from {
+              opacity: 0;
+              transform: translateX(-100%);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
 
-                  <div
-                    style={navbarStyles.userMenuItem}
-                    onClick={() => {
-                      navigate("/my-events", { state: { activeTab: "events" } });
-                      setShowUserMenu(false);
-                    }}
-                    onMouseOver={(e) =>
-                      handleMouseOver(e, navbarStyles.userMenuItemHover)
-                    }
-                    onMouseOut={(e) =>
-                      handleMouseOut(e, navbarStyles.userMenuItem)
-                    }
-                  >
-                    <Calendar size={18} />
-                    My Events
-                  </div>
-
-                  <div
-                    style={navbarStyles.userMenuItem}
-                    onClick={() => {
-                      navigate("/settings");
-                      setShowUserMenu(false);
-                    }}
-                    onMouseOver={(e) =>
-                      handleMouseOver(e, navbarStyles.userMenuItemHover)
-                    }
-                    onMouseOut={(e) =>
-                      handleMouseOut(e, navbarStyles.userMenuItem)
-                    }
-                  >
-                    <Settings size={18} />
-                    Settings
-                  </div>
-
-                  <div
-                    style={navbarStyles.userMenuItem}
-                    onClick={handleLogout}
-                    onMouseOver={(e) =>
-                      handleMouseOver(e, navbarStyles.userMenuItemHover)
-                    }
-                    onMouseOut={(e) =>
-                      handleMouseOut(e, navbarStyles.userMenuItem)
-                    }
-                  >
-                    <LogOut size={18} />
-                    Sign Out
-                  </div>
-                </div>
-              )}
-            </div>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                style={navbarStyles.loginButton}
-                onMouseOver={(e) =>
-                  handleMouseOver(e, navbarStyles.loginButtonHover)
-                }
-                onMouseOut={(e) => handleMouseOut(e, navbarStyles.loginButton)}
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                style={navbarStyles.signupButton}
-                onMouseOver={(e) =>
-                  handleMouseOver(e, navbarStyles.signupButtonHover)
-                }
-                onMouseOut={(e) => handleMouseOut(e, navbarStyles.signupButton)}
-              >
-                Sign Up
-              </Link>
-            </>
-          )}
-        </div>
-
-        {/* Invisible spacer for layout balance */}
-        <div
-          style={{ width: "40px", visibility: "hidden" }}
-          className="d-md-none"
-        >
-          <Menu size={24} />
-        </div>
-      </div>
-
-      {/* Mobile menu */}
-      {isMenuOpen && (
-        <div style={navbarStyles.mobileMenu}>
+          .navbar-blur {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+          }
+        `}
+      </style>
+      <nav style={navbarStyles.navbar} className="navbar-blur">
+        <div style={navbarStyles.container}>
+          {/* Menu button on left */}
           <button
-            style={navbarStyles.closeButton}
+            style={navbarStyles.menuButton}
             onClick={toggleMenu}
-            aria-label="Close menu"
+            aria-label="Toggle menu"
           >
-            <X size={24} />
+            <Menu size={24} />
           </button>
 
+          {/* Centered logo */}
           <Link
             to="/"
-            style={navbarStyles.mobileNavLink}
-            onClick={handleMenuClick}
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
           >
-            Home
+            <img
+              src={logo}
+              alt="Eventify Logo"
+              style={navbarStyles.brandLogo}
+            />
           </Link>
 
-          {isAuthenticated ? (
-            <>
-              <Link
-                to={
-                  user?.role === "club_admin"
-                    ? "/admin-dashboard"
-                    : "/student-dashboard"
-                }
-                style={navbarStyles.mobileNavLink}
-                onClick={handleMenuClick}
-              >
-                Dashboard
-              </Link>
+          {/* Desktop buttons */}
+          <div style={navbarStyles.desktopButtons} className="d-none d-md-flex">
+            {isAuthenticated ? (
+              <div style={navbarStyles.userSection}>
+                <div style={navbarStyles.userInfo}>
+                  <span style={navbarStyles.userName}>
+                    {user?.firstName} {user?.lastName}
+                  </span>
+                  <span style={navbarStyles.userRole}>
+                    {user?.role === "club_admin" ? "Club Admin" : "Student"}
+                  </span>
+                </div>
 
-              {/* Mobile user info */}
-              <div
-                style={{
-                  padding: "1rem 0",
-                  borderBottom: "1px solid rgba(248, 183, 0, 0.3)",
-                }}
-              >
+                <div
+                  style={navbarStyles.userAvatar}
+                  onClick={toggleUserMenu}
+                  onMouseOver={(e) =>
+                    handleMouseOver(e, navbarStyles.userAvatarHover)
+                  }
+                  onMouseOut={(e) => handleMouseOut(e, navbarStyles.userAvatar)}
+                >
+                  <User size={20} color="#000" />
+                </div>
+
+                {/* UPDATED USER DROPDOWN MENU */}
+                {showUserMenu && (
+                  <div style={navbarStyles.userMenu}>
+                    <div style={navbarStyles.userMenuHeader}>
+                      <div style={navbarStyles.userMenuHeaderName}>
+                        {user?.firstName} {user?.lastName}
+                      </div>
+                      <div style={navbarStyles.userMenuHeaderEmail}>
+                        {user?.email}
+                      </div>
+                    </div>
+
+                    <div
+                      style={navbarStyles.userMenuItem}
+                      onClick={() => {
+                        navigate(
+                          user?.role === "club_admin"
+                            ? "/admin-dashboard"
+                            : "/student-dashboard"
+                        );
+                        setShowUserMenu(false);
+                      }}
+                      onMouseOver={(e) =>
+                        handleMouseOver(e, navbarStyles.userMenuItemHover)
+                      }
+                      onMouseOut={(e) =>
+                        handleMouseOut(e, navbarStyles.userMenuItem)
+                      }
+                    >
+                      <User size={18} />
+                      Dashboard
+                    </div>
+
+                    <div
+                      style={navbarStyles.userMenuItem}
+                      onClick={() => {
+                        navigate("/my-events", {
+                          state: { activeTab: "events" },
+                        });
+                        setShowUserMenu(false);
+                      }}
+                      onMouseOver={(e) =>
+                        handleMouseOver(e, navbarStyles.userMenuItemHover)
+                      }
+                      onMouseOut={(e) =>
+                        handleMouseOut(e, navbarStyles.userMenuItem)
+                      }
+                    >
+                      <Calendar size={18} />
+                      My Events
+                    </div>
+
+                    <div
+                      style={navbarStyles.userMenuItem}
+                      onClick={() => {
+                        navigate("/settings");
+                        setShowUserMenu(false);
+                      }}
+                      onMouseOver={(e) =>
+                        handleMouseOver(e, navbarStyles.userMenuItemHover)
+                      }
+                      onMouseOut={(e) =>
+                        handleMouseOut(e, navbarStyles.userMenuItem)
+                      }
+                    >
+                      <Settings size={18} />
+                      Settings
+                    </div>
+
+                    <div
+                      style={navbarStyles.userMenuItem}
+                      onClick={handleLogout}
+                      onMouseOver={(e) =>
+                        handleMouseOver(e, navbarStyles.userMenuItemHover)
+                      }
+                      onMouseOut={(e) =>
+                        handleMouseOut(e, navbarStyles.userMenuItem)
+                      }
+                    >
+                      <LogOut size={18} />
+                      Sign Out
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  style={navbarStyles.loginButton}
+                  onMouseOver={(e) =>
+                    handleMouseOver(e, navbarStyles.loginButtonHover)
+                  }
+                  onMouseOut={(e) =>
+                    handleMouseOut(e, navbarStyles.loginButton)
+                  }
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  style={navbarStyles.signupButton}
+                  onMouseOver={(e) =>
+                    handleMouseOver(e, navbarStyles.signupButtonHover)
+                  }
+                  onMouseOut={(e) =>
+                    handleMouseOut(e, navbarStyles.signupButton)
+                  }
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Invisible spacer for layout balance */}
+          <div
+            style={{ width: "40px", visibility: "hidden" }}
+            className="d-md-none"
+          >
+            <Menu size={24} />
+          </div>
+        </div>
+
+        {/* Mobile menu */}
+        {isMenuOpen && (
+          <div style={navbarStyles.mobileMenu}>
+            <button
+              style={navbarStyles.closeButton}
+              onClick={toggleMenu}
+              aria-label="Close menu"
+            >
+              <X size={24} />
+            </button>
+
+            <Link
+              to="/"
+              style={navbarStyles.mobileNavLink}
+              onClick={handleMenuClick}
+            >
+              Home
+            </Link>
+
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to={
+                    user?.role === "club_admin"
+                      ? "/admin-dashboard"
+                      : "/student-dashboard"
+                  }
+                  style={navbarStyles.mobileNavLink}
+                  onClick={handleMenuClick}
+                >
+                  Dashboard
+                </Link>
+
+                {/* Mobile user info */}
                 <div
                   style={{
-                    color: "#f8b700",
-                    fontSize: "1.1rem",
-                    fontWeight: "600",
+                    padding: "1rem 0",
+                    borderBottom: "1px solid rgba(248, 183, 0, 0.3)",
                   }}
                 >
-                  {user?.firstName} {user?.lastName}
+                  <div
+                    style={{
+                      color: "#f8b700",
+                      fontSize: "1.1rem",
+                      fontWeight: "600",
+                    }}
+                  >
+                    {user?.firstName} {user?.lastName}
+                  </div>
+                  <div style={{ color: "#ccc", fontSize: "0.9rem" }}>
+                    {user?.role === "club_admin" ? "Club Admin" : "Student"}
+                  </div>
                 </div>
-                <div style={{ color: "#ccc", fontSize: "0.9rem" }}>
-                  {user?.role === "club_admin" ? "Club Admin" : "Student"}
-                </div>
-              </div>
 
-              {/* Mobile sign out */}
+                {/* Mobile sign out */}
+                <div style={navbarStyles.mobileButtons}>
+                  <button
+                    style={navbarStyles.mobileLoginButton}
+                    onClick={() => {
+                      handleLogout();
+                      handleMenuClick();
+                    }}
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              </>
+            ) : (
               <div style={navbarStyles.mobileButtons}>
-                <button
+                <Link
+                  to="/login"
                   style={navbarStyles.mobileLoginButton}
-                  onClick={() => {
-                    handleLogout();
-                    handleMenuClick();
-                  }}
+                  onClick={handleMenuClick}
                 >
-                  Sign Out
-                </button>
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  style={navbarStyles.mobileSignupButton}
+                  onClick={handleMenuClick}
+                >
+                  Sign Up
+                </Link>
               </div>
-            </>
-          ) : (
-            <div style={navbarStyles.mobileButtons}>
-              <Link
-                to="/login"
-                style={navbarStyles.mobileLoginButton}
-                onClick={handleMenuClick}
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                style={navbarStyles.mobileSignupButton}
-                onClick={handleMenuClick}
-              >
-                Sign Up
-              </Link>
-            </div>
-          )}
-        </div>
-      )}
+            )}
+          </div>
+        )}
 
-      {/* Click outside to close user menu */}
-      {showUserMenu && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 1000,
-          }}
-          onClick={() => setShowUserMenu(false)}
-        />
-      )}
-    </nav>
+        {/* Click outside to close user menu */}
+        {showUserMenu && (
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 1000,
+            }}
+            onClick={() => setShowUserMenu(false)}
+          />
+        )}
+      </nav>
+    </>
   );
 }
 
