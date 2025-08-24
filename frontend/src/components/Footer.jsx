@@ -1,6 +1,10 @@
 import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function Footer() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  
   const footerStyles = {
     footer: {
       backgroundColor: 'var(--bs-footer-bg)',
@@ -52,6 +56,7 @@ function Footer() {
       textDecoration: 'none',
       transition: 'color 0.3s ease',
       fontSize: '0.95rem',
+      cursor: 'pointer',
     },
     linkHover: {
       color: 'var(--brand)',
@@ -77,6 +82,27 @@ function Footer() {
     e.target.style.color = footerStyles.link.color;
   };
 
+  // Function to handle scrolling to events section
+  const scrollToEventsSection = () => {
+    // If we're not on the home page, navigate to home first
+    if (location.pathname !== '/') {
+      navigate('/');
+      // Wait for navigation to complete, then scroll to events section
+      setTimeout(() => {
+        const eventsSection = document.getElementById('events-section');
+        if (eventsSection) {
+          eventsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      // If we're already on home page, just scroll to events section
+      const eventsSection = document.getElementById('events-section');
+      if (eventsSection) {
+        eventsSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <footer style={footerStyles.footer}>
       <div style={footerStyles.container}>
@@ -84,25 +110,23 @@ function Footer() {
           <div className="footer-column" style={footerStyles.column}>
             <h5 style={footerStyles.footerBrand}>eventify</h5>
             <ul style={footerStyles.list}>
-              {["Find Events", "Create Events", "Venues", "Cities", "Organizers", "Teams"].map((label, i) => (
-                <li key={i} style={footerStyles.listItem}>
-                  <a
-                    href={`/${label.toLowerCase().replace(' ', '-')}`}
-                    style={footerStyles.link}
-                    onMouseOver={handleMouseOver}
-                    onMouseOut={handleMouseOut}
-                  >
-                    {label}
-                  </a>
-                </li>
-              ))}
+              <li style={footerStyles.listItem}>
+                <span
+                  style={footerStyles.link}
+                  onMouseOver={handleMouseOver}
+                  onMouseOut={handleMouseOut}
+                  onClick={scrollToEventsSection}
+                >
+                  Find Events
+                </span>
+              </li>
             </ul>
           </div>
 
           <div className="footer-column" style={footerStyles.column}>
             <h5 style={footerStyles.heading}>Learn More</h5>
             <ul style={footerStyles.list}>
-              {["About Rewards", "Reviews", "Group Tickets"].map((label, i) => (
+              {["About Rewards", "Reviews"].map((label, i) => (
                 <li key={i} style={footerStyles.listItem}>
                   <a
                     href={`/${label.toLowerCase().replace(' ', '-')}`}
@@ -138,7 +162,7 @@ function Footer() {
           <div className="footer-column" style={footerStyles.column}>
             <h5 style={footerStyles.heading}>Details</h5>
             <ul style={footerStyles.list}>
-              {["Terms & Conditions", "Privacy Policy", "Download Apps"].map((label, i) => (
+              {["Terms & Conditions", "Privacy Policy"].map((label, i) => (
                 <li key={i} style={footerStyles.listItem}>
                   <a
                     href={`/${label.toLowerCase().replace(/ & | /g, '-').replace('--', '-')}`}

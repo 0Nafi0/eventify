@@ -16,6 +16,9 @@ import eventService from "../services/eventService";
 import { useAuth } from "../context/AuthContext";
 
 const EventsPage = () => {
+  // ✅ Move useAuth() to the top of the component
+  const { isAuthenticated, user } = useAuth();
+
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false); // Changed to false for initial load
   const [initialLoad, setInitialLoad] = useState(true); // Added for first load

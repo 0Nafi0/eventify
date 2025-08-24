@@ -7,9 +7,8 @@ Eventify is a comprehensive event management platform tailored for university cl
 ## Table of Contents
 
 - [Overview](#overview)
-- [Features](#features)
-  - [Student Features](#student-features)
-  - [Admin Features](#admin-features)
+- [Features](#features) - [Student Features](#student-features)
+- [Admin Features](#admin-features)
 - [Tech Stack](#tech-stack)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -60,8 +59,7 @@ Backend:
 
 Deployment:
 
-- Vercel (Frontend)
-- Render (Backend)
+- Vercel 
 
 ---
 
@@ -101,7 +99,6 @@ npm run dev
 
 ## Challenges & Advanced Features
 
-- Automatic Certificate Generator: Students can download participation certificates after events.
 - Event Recommendations: (Planned) Suggests relevant events based on user interests.
 - Event Search and Filters:(Planned) Search and filter events by category, date, or keyword.
 - Dark Mode/Light Mode Toggle:Switch between dark and light themes.
