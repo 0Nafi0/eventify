@@ -359,7 +359,7 @@ function Navbar() {
                   <div
                     style={navbarStyles.userMenuItem}
                     onClick={() => {
-                      navigate("/my-events");
+                      navigate("/my-events", { state: { activeTab: "events" } });
                       setShowUserMenu(false);
                     }}
                     onMouseOver={(e) =>

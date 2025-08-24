@@ -51,6 +51,14 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: "/my-events",
+        element: (
+          <ProtectedRoute requiredRole="student">
+            <StudentDashboard />
+          </ProtectedRoute>
+        ),
+      },
       // Admin Event Management Routes - NEW
       {
         path: "/admin/events",
