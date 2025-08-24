@@ -1,111 +1,204 @@
+/* Fixes for text visibility in dark mode */
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  --brand: #f8b700;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --bs-body-bg: #ffffff;
+  --bs-body-color: #212529;
+  --bs-card-bg: #ffffff;
+  --bs-footer-bg: #f8f9fa;
+  --bs-navbar-bg: #f8f9fa;
+  --bs-text-muted: #6c757d;
+  --bs-navbar-color: rgba(0, 0, 0, 0.7);
+  --bs-navbar-hover-color: #000000;
+  --bs-navbar-active-color: #000000;
+  --bs-border-color: rgba(0, 0, 0, 0.1);
+  --bs-box-shadow: rgba(0, 0, 0, 0.05);
+  --bs-box-shadow-hover: rgba(0, 0, 0, 0.1);
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+[data-bs-theme='dark'] {
+  --bs-body-bg: #121212;
+  --bs-body-color: #f8f9fa;
+  --bs-card-bg: #1e1e1e;
+  --bs-footer-bg: #1a1a1a;
+  --bs-navbar-bg: #1a1a1a;
+  --bs-text-muted: #ced4da;
+  --bs-navbar-color: rgba(255, 255, 255, 0.75);
+  --bs-navbar-hover-color: #ffffff;
+  --bs-navbar-active-color: #ffffff;
+  --bs-border-color: rgba(255, 255, 255, 0.1);
+  --bs-box-shadow: rgba(0, 0, 0, 0.3);
+  --bs-box-shadow-hover: rgba(0, 0, 0, 0.4);
+
+  /* Dark mode overrides for footer & admin */
+  footer,
+  .admin-card,
+  .admin-card * {
+    color: #ffffff !important;
+  }
+
+  .footer-column h5,
+  .footer-column ul li a {
+    color: #ffffff !important;
+  }
+
+  .admin-btn {
+    color: #000 !important;
+  }
 }
-a:hover {
-  color: #535bf2;
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
   display: flex;
-  place-items: center;
-  min-width: 320px;
+  flex-direction: column;
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+main {
+  flex: 1;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+.admin-card,
+.admin-card * {
+  color: var(--bs-body-color) !important;
+}
+
+.text-muted {
+  color: var(--bs-text-muted) !important;
+}
+
+.card,
+.modal-content,
+.dropdown-menu,
+.list-group-item {
+  background-color: var(--bs-card-bg);
+  color: var(--bs-body-color);
+  border-color: var(--bs-border-color);
+  box-shadow: 0 0.125rem 0.25rem var(--bs-box-shadow);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 0.25rem 0.5rem var(--bs-box-shadow-hover);
+}
+
+.navbar {
+  background-color: var(--bs-navbar-bg) !important;
+  border-bottom: 1px solid var(--bs-border-color);
+  transition: all 0.3s ease;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--bs-navbar-color) !important;
+}
+
+.nav-link {
   font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  padding: 0.5rem 1rem;
+  color: var(--bs-navbar-color) !important;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.nav-link:hover {
+  color: var(--bs-navbar-hover-color) !important;
 }
-.auth-card {
+
+.nav-link.active {
+  color: var(--bs-navbar-active-color) !important;
+  font-weight: 600;
+}
+
+.navbar-toggler {
+  border-color: var(--bs-border-color);
+}
+
+.admin-container {
   width: 100%;
-  max-width: 500px; /* bigger on PC */
-  padding: 40px;
-  border-radius: 15px;
-  background-color: #fff;
-  color: #000;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  padding: 2rem;
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
 }
 
-.btn-cta {
-  background-color: #00b96b;
+.club-name {
+  color: var(--brand);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.admin-card {
+  background-color: var(--bs-card-bg);
+  color: var(--bs-body-color);
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px var(--bs-box-shadow);
+  transition: all 0.3s ease;
+}
+
+.admin-btn {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  background-color: var(--brand);
+  color: var(--bs-body-bg);
   border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.admin-btn.logout {
+  background-color: #dc3545;
+  color: var(--bs-body-bg);
+}
+
+.admin-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: var(--bs-body-bg);
+  border-radius: 8px;
+}
+
+.admin-stat-number {
+  font-size: 2rem;
   font-weight: bold;
-  padding: 10px;
-  font-size: 16px;
+  color: var(--brand);
 }
 
-.btn-cta:hover {
-  background-color: #009e5c;
+.admin-stat-label {
+  font-size: 0.9rem;
+  color: var(--bs-text-muted);
+  margin-top: 0.5rem;
 }
 
-.footerLink {
-  color: #00b96b;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.footerLink:hover {
-  text-decoration: underline;
-}
-
-/* Make responsive */
-@media (max-width: 576px) {
-  .auth-card {
-    padding: 25px;
-    max-width: 90%;
-  }
-  .btn-cta {
-    font-size: 14px;
-    padding: 8px;
-  }
+footer {
+  background-color: var(--bs-footer-bg);
+  color: var(--bs-body-color);
+  padding: 2rem 0;
+  border-top: 1px solid var(--bs-border-color);
+  margin-top: auto;
+  transition: all 0.3s ease;
 }

@@ -8,7 +8,7 @@ import StudentDashboard from "./pages/StudentDashboard.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
-// Admin Pages - NEW IMPORTS
+// Admin Pages 
 import ManageEventsPage from "./pages/admin/ManageEventsPage.jsx";
 import CreateEventPage from "./pages/admin/CreateEventPage.jsx";
 import EditEventPage from "./pages/admin/EditEventPage.jsx";

@@ -1,5 +1,3 @@
-// src/components/EventCard.jsx
-
 import React from "react";
 import { Card, Badge, Button } from "react-bootstrap";
 import { Calendar, Clock, MapPin, Users, Tag } from "lucide-react";
@@ -13,13 +11,13 @@ const EventCard = ({
   isRegistered = false,
 }) => {
   if (!event) return null;
+  
   const handleRegister = async () => {
     try {
       await eventService.registerForEvent(event._id);
       onRegister && onRegister(event._id);
     } catch (error) {
       console.error("Registration error:", error);
-      // You can add toast notification here
     }
   };
 
@@ -29,7 +27,6 @@ const EventCard = ({
       onUnregister && onUnregister(event._id);
     } catch (error) {
       console.error("Unregistration error:", error);
-      // You can add toast notification here
     }
   };
 
@@ -109,16 +106,11 @@ const EventCard = ({
         <div className="mb-2">
           {renderStatusBadge()}
           <Badge
-            bg="light"
-            text="dark"
             className="ms-2"
             style={{
-              backgroundColor:
-                eventService.getCategoryColor(event.category) + "20",
+              backgroundColor: `${eventService.getCategoryColor(event.category)}20`,
               color: eventService.getCategoryColor(event.category),
-              border: `1px solid ${eventService.getCategoryColor(
-                event.category
-              )}`,
+              border: `1px solid ${eventService.getCategoryColor(event.category)}`,
             }}
           >
             {eventService.getCategoryDisplayName(event.category)}

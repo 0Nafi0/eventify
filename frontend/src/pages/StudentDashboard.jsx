@@ -1,5 +1,3 @@
-// src/pages/StudentDashboard.jsx
-
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Badge, Alert, Spinner, Tabs, Tab } from 'react-bootstrap';
 import { Calendar, Clock, MapPin, Users, Tag, Bookmark, User, Settings, LogOut } from 'lucide-react';
@@ -77,7 +75,6 @@ function StudentDashboard() {
 
   return (
     <Container className="py-4">
-      {/* Header */}
       <Row className="mb-4">
         <Col>
           <div className="d-flex justify-content-between align-items-center">
@@ -101,7 +98,6 @@ function StudentDashboard() {
         </Col>
       </Row>
 
-      {/* Stats Cards */}
       <Row className="mb-4">
         <Col md={3} className="mb-3">
           <Card className="text-center h-100 border-0 shadow-sm">
@@ -149,7 +145,6 @@ function StudentDashboard() {
         </Col>
       </Row>
 
-      {/* Tabs */}
       <Tabs 
         activeKey={activeTab} 
         onSelect={(k) => setActiveTab(k)} 
@@ -222,7 +217,6 @@ function StudentDashboard() {
             </Alert>
           ) : (
             <>
-              {/* Upcoming Events */}
               {getUpcomingEvents().length > 0 && (
                 <div className="mb-4">
                   <h4 className="mb-3">Upcoming Events</h4>
@@ -241,7 +235,6 @@ function StudentDashboard() {
                 </div>
               )}
 
-              {/* Past Events */}
               {getPastEvents().length > 0 && (
                 <div>
                   <h4 className="mb-3">Past Events</h4>
@@ -259,7 +252,6 @@ function StudentDashboard() {
                 </div>
               )}
 
-              {/* No Events */}
               {registeredEvents.length === 0 && (
                 <div className="text-center py-5">
                   <Calendar size={64} className="text-muted mb-3" />
@@ -282,7 +274,5 @@ function StudentDashboard() {
     </Container>
   );
 }
-
-
 
 export default StudentDashboard;

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { User, LogOut, Menu, X, Settings, Calendar } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
+import { User, LogOut, Menu, X, Moon, Sun, Settings, Calendar } from "lucide-react";
 import logo from "../assets/images/logo.png";
 
 function Navbar() {
@@ -9,6 +10,7 @@ function Navbar() {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const { user, isAuthenticated, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const toggleMenu = () => {
@@ -44,7 +46,6 @@ function Navbar() {
       zIndex: "1000",
       height: "75px",
       borderBottom: "1px solid rgba(248, 183, 0, 0.1)",
-      animation: "navbarFadeIn 0.5s ease-out",
     },
     container: {
       display: "flex",
@@ -55,7 +56,6 @@ function Navbar() {
       height: "100%",
       position: "relative",
       padding: "0 1rem",
-      animation: "navbarFadeIn 0.5s ease-out",
     },
     brandLogo: {
       height: "55px",
@@ -64,13 +64,29 @@ function Navbar() {
       top: "50%",
       transform: "translate(-50%, -50%)",
       transition: "transform 0.3s ease",
-      animation: "logoPopIn 0.6s ease-out",
       filter: "drop-shadow(0 2px 4px rgba(248, 183, 0, 0.2))",
     },
     desktopButtons: {
       display: "flex",
       gap: "0.8rem",
       alignItems: "center",
+    },
+    themeToggleButton: {
+      backgroundColor: 'transparent',
+      border: '2px solid #f8b700',
+      color: '#f8b700',
+      borderRadius: '25px',
+      padding: '0.5rem',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      transition: 'all 0.3s ease',
+      marginRight: '0.8rem',
+    },
+    themeToggleButtonHover: {
+      backgroundColor: '#f8b700',
+      color: '#000',
     },
     loginButton: {
       background: "transparent",
@@ -83,7 +99,6 @@ function Navbar() {
       fontWeight: "600",
       fontSize: "0.95rem",
       boxShadow: "0 0 15px rgba(248, 183, 0, 0.1)",
-      animation: "buttonSlideIn 0.5s ease-out",
       backdropFilter: "blur(8px)",
     },
     loginButtonHover: {
@@ -103,7 +118,6 @@ function Navbar() {
       fontWeight: "600",
       fontSize: "0.95rem",
       boxShadow: "0 4px 15px rgba(248, 183, 0, 0.3)",
-      animation: "buttonSlideIn 0.5s ease-out 0.1s",
     },
     signupButtonHover: {
       background: "transparent",
@@ -130,7 +144,6 @@ function Navbar() {
       border: "2px solid rgba(248, 183, 0, 0.3)",
       transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
       boxShadow: "0 2px 10px rgba(248, 183, 0, 0.2)",
-      animation: "avatarPulse 2s infinite",
     },
     userAvatarHover: {
       borderColor: "rgba(255, 255, 255, 0.8)",
@@ -154,15 +167,13 @@ function Navbar() {
       color: "#ccc",
       textTransform: "capitalize",
     },
-    // UPDATED POPUP MENU STYLES
     userMenu: {
       position: "absolute",
       top: "calc(100% + 12px)",
       right: "0",
       background: "linear-gradient(to bottom, #1a1a1a, #0d0d0d)",
       borderRadius: "16px",
-      boxShadow:
-        "0 10px 30px rgba(0,0,0,0.4), 0 0 0 1px rgba(248, 183, 0, 0.2)",
+      boxShadow: "0 10px 30px rgba(0,0,0,0.4), 0 0 0 1px rgba(248, 183, 0, 0.2)",
       padding: "0.75rem",
       minWidth: "240px",
       zIndex: "1001",
@@ -170,7 +181,6 @@ function Navbar() {
       overflow: "hidden",
       border: "1px solid rgba(248, 183, 0, 0.15)",
       backdropFilter: "blur(10px)",
-      animation: "menuSlideIn 0.3s ease-out",
     },
     userMenuHeader: {
       padding: "0.75rem 1rem",
@@ -200,7 +210,6 @@ function Navbar() {
       fontSize: "0.95rem",
       margin: "0.15rem 0",
       backgroundColor: "transparent",
-      transform: "none",
     },
     userMenuItemHover: {
       backgroundColor: "rgba(248, 183, 0, 0.15)",
@@ -209,8 +218,7 @@ function Navbar() {
     },
     menuButton: {
       border: "none",
-      background:
-        "linear-gradient(135deg, rgba(248, 183, 0, 0.1), rgba(248, 183, 0, 0.05))",
+      background: "linear-gradient(135deg, rgba(248, 183, 0, 0.1), rgba(248, 183, 0, 0.05))",
       fontSize: "1.8rem",
       cursor: "pointer",
       color: "#f8b700",
@@ -227,16 +235,12 @@ function Navbar() {
       left: "0",
       width: "100vw",
       height: "100vh",
-      background:
-        "linear-gradient(135deg, rgba(0, 0, 0, 0.97), rgba(26, 26, 26, 0.97))",
+      background: "linear-gradient(135deg, rgba(0, 0, 0, 0.97), rgba(26, 26, 26, 0.97))",
       padding: "5rem 2rem 2rem",
       display: isMenuOpen ? "block" : "none",
       zIndex: "1500",
       overflowY: "auto",
       backdropFilter: "blur(10px)",
-      animation: "mobileMenuSlide 0.3s ease-out",
-      maxHeight: "100vh",
-      overflowX: "hidden",
     },
     closeButton: {
       position: "absolute",
@@ -291,6 +295,26 @@ function Navbar() {
       textAlign: "center",
       fontWeight: "600",
       fontSize: "1.1rem",
+      transition: "all 0.3s ease",
+    },
+    mobileThemeToggle: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "1rem 0",
+      borderBottom: "1px solid rgba(248, 183, 0, 0.3)",
+      marginBottom: "1rem",
+    },
+    mobileThemeButton: {
+      backgroundColor: "transparent",
+      border: "2px solid #f8b700",
+      color: "#f8b700",
+      borderRadius: "25px",
+      padding: "0.6rem 1rem",
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      gap: "0.5rem",
       transition: "all 0.3s ease",
     },
   };
@@ -352,10 +376,10 @@ function Navbar() {
               box-shadow: 0 0 0 0 rgba(248, 183, 0, 0.4);
             }
             70% {
-              box-shadow: 0 0 0 10px rgba(248, 183, 0, 0);
+              boxShadow: 0 0 0 10px rgba(248, 183, 0, 0);
             }
             100% {
-              box-shadow: 0 0 0 0 rgba(248, 183, 0, 0);
+              boxShadow: 0 0 0 0 rgba(248, 183, 0, 0);
             }
           }
 
@@ -387,6 +411,7 @@ function Navbar() {
           }
         `}
       </style>
+      
       <nav style={navbarStyles.navbar} className="navbar-blur">
         <div style={navbarStyles.container}>
           {/* Menu button on left */}
@@ -398,25 +423,21 @@ function Navbar() {
             <Menu size={24} />
           </button>
 
-          {/* Centered logo */}
-          <Link
-            to="/"
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
-          >
-            <img
-              src={logo}
-              alt="Eventify Logo"
-              style={navbarStyles.brandLogo}
-            />
+          <Link to="/" style={{position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)'}}>
+            <img src={logo} alt="Eventify Logo" style={navbarStyles.brandLogo} />
           </Link>
 
-          {/* Desktop buttons */}
           <div style={navbarStyles.desktopButtons} className="d-none d-md-flex">
+            <button
+              style={navbarStyles.themeToggleButton}
+              onClick={toggleTheme}
+              onMouseOver={(e) => handleMouseOver(e, navbarStyles.themeToggleButtonHover)}
+              onMouseOut={(e) => handleMouseOut(e, navbarStyles.themeToggleButton)}
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+
             {isAuthenticated ? (
               <div style={navbarStyles.userSection}>
                 <div style={navbarStyles.userInfo}>
@@ -424,22 +445,19 @@ function Navbar() {
                     {user?.firstName} {user?.lastName}
                   </span>
                   <span style={navbarStyles.userRole}>
-                    {user?.role === "club_admin" ? "Club Admin" : "Student"}
+                    {user?.role === 'club_admin' ? 'Club Admin' : 'Student'}
                   </span>
                 </div>
-
-                <div
+                
+                <div 
                   style={navbarStyles.userAvatar}
                   onClick={toggleUserMenu}
-                  onMouseOver={(e) =>
-                    handleMouseOver(e, navbarStyles.userAvatarHover)
-                  }
+                  onMouseOver={(e) => handleMouseOver(e, navbarStyles.userAvatarHover)}
                   onMouseOut={(e) => handleMouseOut(e, navbarStyles.userAvatar)}
                 >
                   <User size={20} color="#000" />
                 </div>
 
-                {/* UPDATED USER DROPDOWN MENU */}
                 {showUserMenu && (
                   <div style={navbarStyles.userMenu}>
                     <div style={navbarStyles.userMenuHeader}>
@@ -450,73 +468,26 @@ function Navbar() {
                         {user?.email}
                       </div>
                     </div>
-
-                    <div
+                    
+                    <div 
                       style={navbarStyles.userMenuItem}
                       onClick={() => {
-                        navigate(
-                          user?.role === "club_admin"
-                            ? "/admin-dashboard"
-                            : "/student-dashboard"
-                        );
+                        navigate(user?.role === 'club_admin' ? '/admin-dashboard' : '/student-dashboard');
                         setShowUserMenu(false);
                       }}
-                      onMouseOver={(e) =>
-                        handleMouseOver(e, navbarStyles.userMenuItemHover)
-                      }
-                      onMouseOut={(e) =>
-                        handleMouseOut(e, navbarStyles.userMenuItem)
-                      }
+                      onMouseOver={(e) => handleMouseOver(e, navbarStyles.userMenuItemHover)}
+                      onMouseOut={(e) => handleMouseOut(e, navbarStyles.userMenuItem)}
                     >
                       <User size={18} />
                       Dashboard
                     </div>
-
-                    <div
-                      style={navbarStyles.userMenuItem}
-                      onClick={() => {
-                        navigate("/my-events", {
-                          state: { activeTab: "events" },
-                        });
-                        setShowUserMenu(false);
-                      }}
-                      onMouseOver={(e) =>
-                        handleMouseOver(e, navbarStyles.userMenuItemHover)
-                      }
-                      onMouseOut={(e) =>
-                        handleMouseOut(e, navbarStyles.userMenuItem)
-                      }
-                    >
-                      <Calendar size={18} />
-                      My Events
-                    </div>
-
-                    <div
-                      style={navbarStyles.userMenuItem}
-                      onClick={() => {
-                        navigate("/settings");
-                        setShowUserMenu(false);
-                      }}
-                      onMouseOver={(e) =>
-                        handleMouseOver(e, navbarStyles.userMenuItemHover)
-                      }
-                      onMouseOut={(e) =>
-                        handleMouseOut(e, navbarStyles.userMenuItem)
-                      }
-                    >
-                      <Settings size={18} />
-                      Settings
-                    </div>
-
-                    <div
+                    
+                    
+                    <div 
                       style={navbarStyles.userMenuItem}
                       onClick={handleLogout}
-                      onMouseOver={(e) =>
-                        handleMouseOver(e, navbarStyles.userMenuItemHover)
-                      }
-                      onMouseOut={(e) =>
-                        handleMouseOut(e, navbarStyles.userMenuItem)
-                      }
+                      onMouseOver={(e) => handleMouseOver(e, navbarStyles.userMenuItemHover)}
+                      onMouseOut={(e) => handleMouseOut(e, navbarStyles.userMenuItem)}
                     >
                       <LogOut size={18} />
                       Sign Out
@@ -526,27 +497,19 @@ function Navbar() {
               </div>
             ) : (
               <>
-                <Link
-                  to="/login"
+                <Link 
+                  to="/login" 
                   style={navbarStyles.loginButton}
-                  onMouseOver={(e) =>
-                    handleMouseOver(e, navbarStyles.loginButtonHover)
-                  }
-                  onMouseOut={(e) =>
-                    handleMouseOut(e, navbarStyles.loginButton)
-                  }
+                  onMouseOver={(e) => handleMouseOver(e, navbarStyles.loginButtonHover)}
+                  onMouseOut={(e) => handleMouseOut(e, navbarStyles.loginButton)}
                 >
                   Login
                 </Link>
-                <Link
-                  to="/register"
+                <Link 
+                  to="/register" 
                   style={navbarStyles.signupButton}
-                  onMouseOver={(e) =>
-                    handleMouseOver(e, navbarStyles.signupButtonHover)
-                  }
-                  onMouseOut={(e) =>
-                    handleMouseOut(e, navbarStyles.signupButton)
-                  }
+                  onMouseOver={(e) => handleMouseOver(e, navbarStyles.signupButtonHover)}
+                  onMouseOut={(e) => handleMouseOut(e, navbarStyles.signupButton)}
                 >
                   Sign Up
                 </Link>
@@ -555,10 +518,7 @@ function Navbar() {
           </div>
 
           {/* Invisible spacer for layout balance */}
-          <div
-            style={{ width: "40px", visibility: "hidden" }}
-            className="d-md-none"
-          >
+          <div style={{ width: '40px', visibility: 'hidden' }} className="d-md-none">
             <Menu size={24} />
           </div>
         </div>
@@ -566,7 +526,7 @@ function Navbar() {
         {/* Mobile menu */}
         {isMenuOpen && (
           <div style={navbarStyles.mobileMenu}>
-            <button
+            <button 
               style={navbarStyles.closeButton}
               onClick={toggleMenu}
               aria-label="Close menu"
@@ -574,52 +534,42 @@ function Navbar() {
               <X size={24} />
             </button>
 
-            <Link
-              to="/"
-              style={navbarStyles.mobileNavLink}
-              onClick={handleMenuClick}
-            >
+            <div style={navbarStyles.mobileThemeToggle}>
+              <button
+                style={navbarStyles.mobileThemeButton}
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+              </button>
+            </div>
+            
+            <Link to="/" style={navbarStyles.mobileNavLink} onClick={handleMenuClick}>
               Home
             </Link>
-
+            
             {isAuthenticated ? (
               <>
-                <Link
-                  to={
-                    user?.role === "club_admin"
-                      ? "/admin-dashboard"
-                      : "/student-dashboard"
-                  }
-                  style={navbarStyles.mobileNavLink}
+                <Link 
+                  to={user?.role === 'club_admin' ? '/admin-dashboard' : '/student-dashboard'} 
+                  style={navbarStyles.mobileNavLink} 
                   onClick={handleMenuClick}
                 >
                   Dashboard
                 </Link>
-
-                {/* Mobile user info */}
-                <div
-                  style={{
-                    padding: "1rem 0",
-                    borderBottom: "1px solid rgba(248, 183, 0, 0.3)",
-                  }}
-                >
-                  <div
-                    style={{
-                      color: "#f8b700",
-                      fontSize: "1.1rem",
-                      fontWeight: "600",
-                    }}
-                  >
+                
+                <div style={{ padding: '1rem 0', borderBottom: '1px solid rgba(248, 183, 0, 0.3)' }}>
+                  <div style={{ color: '#f8b700', fontSize: '1.1rem', fontWeight: '600' }}>
                     {user?.firstName} {user?.lastName}
                   </div>
-                  <div style={{ color: "#ccc", fontSize: "0.9rem" }}>
-                    {user?.role === "club_admin" ? "Club Admin" : "Student"}
+                  <div style={{ color: '#ccc', fontSize: '0.9rem' }}>
+                    {user?.role === 'club_admin' ? 'Club Admin' : 'Student'}
                   </div>
                 </div>
 
-                {/* Mobile sign out */}
                 <div style={navbarStyles.mobileButtons}>
-                  <button
+                  <button 
                     style={navbarStyles.mobileLoginButton}
                     onClick={() => {
                       handleLogout();
@@ -660,7 +610,7 @@ function Navbar() {
               left: 0,
               right: 0,
               bottom: 0,
-              zIndex: 1000,
+              zIndex: 1000
             }}
             onClick={() => setShowUserMenu(false)}
           />

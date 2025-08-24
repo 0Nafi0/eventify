@@ -1,8 +1,6 @@
-// src/pages/AdminDashboard.jsx
-
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, Link } from 'react-router-dom'; // Import Link
+import { useNavigate, Link } from 'react-router-dom';
 
 function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -18,21 +16,22 @@ function AdminDashboard() {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
+    <div className="admin-container bg-body text-body">
+      <div className="text-center mb-5">
         <h1>Club Admin Dashboard</h1>
         <p>Welcome back, {user?.firstName}!</p>
-        <p style={styles.clubName}>Club: {user?.clubName}</p>
+        <p className="club-name">Club: {user?.clubName}</p>
       </div>
-      
-      <div style={styles.content}>
-        <div style={styles.card}>
+
+      <div className="admin-grid">
+        <div className="admin-card">
           <h3>Admin Information</h3>
           <p><strong>Name:</strong> {user?.firstName} {user?.lastName}</p>
           <p><strong>Email:</strong> {user?.email}</p>
           <p><strong>Club:</strong> {user?.clubName}</p>
           <p><strong>Department:</strong> {user?.department || 'Not specified'}</p>
         </div>
+
         
         <div style={styles.card}>
           <h3>Event Management</h3> {/* Changed title */}
@@ -41,28 +40,36 @@ function AdminDashboard() {
           <button style={styles.button}>Club Members</button>
           <button style={styles.button}>Club Settings</button>
         </div>
-        
-        <div style={styles.card}>
+
+        <div className="admin-card">
+          <h3>Club Management</h3>
+          <button className="admin-btn">Create Event</button>
+          <button className="admin-btn">Manage Events</button>
+          <button className="admin-btn">Club Members</button>
+          <button className="admin-btn">Club Settings</button>
+        </div>
+
+        <div className="admin-card">
           <h3>Quick Stats</h3>
-          <div style={styles.stat}>
-            <span style={styles.statNumber}>12</span>
-            <span style={styles.statLabel}>Active Events</span>
+          <div className="admin-stat">
+            <span className="admin-stat-number">12</span>
+            <span className="admin-stat-label">Active Events</span>
           </div>
-          <div style={styles.stat}>
-            <span style={styles.statNumber}>156</span>
-            <span style={styles.statLabel}>Club Members</span>
+          <div className="admin-stat">
+            <span className="admin-stat-number">156</span>
+            <span className="admin-stat-label">Club Members</span>
           </div>
-          <div style={styles.stat}>
-            <span style={styles.statNumber}>8</span>
-            <span style={styles.statLabel}>Upcoming Events</span>
+          <div className="admin-stat">
+            <span className="admin-stat-number">8</span>
+            <span className="admin-stat-label">Upcoming Events</span>
           </div>
         </div>
-        
-        <div style={styles.card}>
+
+        <div className="admin-card">
           <h3>Account</h3>
-          <button style={styles.button}>Edit Profile</button>
-          <button style={styles.button}>Change Password</button>
-          <button style={styles.logoutButton} onClick={handleLogout}>
+          <button className="admin-btn">Edit Profile</button>
+          <button className="admin-btn">Change Password</button>
+          <button className="admin-btn logout" onClick={handleLogout}>
             Sign Out
           </button>
         </div>
