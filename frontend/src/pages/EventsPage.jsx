@@ -17,7 +17,8 @@ import { useAuth } from "../context/AuthContext";
 
 const EventsPage = () => {
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Changed to false for initial load
+  const [initialLoad, setInitialLoad] = useState(true); // Added for first load
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -25,6 +26,7 @@ const EventsPage = () => {
   const [pagination, setPagination] = useState({});
   const [registeredEvents, setRegisteredEvents] = useState(new Set());
   const [sortBy, setSortBy] = useState("date-asc");
+  const { isAuthenticated, user } = useAuth();
 
   // Clear registered events when user logs out
   useEffect(() => {
@@ -32,8 +34,6 @@ const EventsPage = () => {
       setRegisteredEvents(new Set());
     }
   }, [isAuthenticated]);
-
-  const { isAuthenticated, user } = useAuth();
 
   const sortOptions = [
     { value: "date-asc", label: "Date (Earliest First)" },
@@ -55,17 +55,20 @@ const EventsPage = () => {
   ];
 
   useEffect(() => {
-    fetchEvents();
-    if (isAuthenticated && user?.role === "student") {
-      fetchRegisteredEvents();
-    }
+    const loadData = async () => {
+      await fetchEvents();
+      if (isAuthenticated && user?.role === "student") {
+        await fetchRegisteredEvents();
+      }
+    };
+    loadData();
   }, [
     currentPage,
     selectedCategory,
     searchTerm,
     sortBy,
     isAuthenticated,
-    user,
+    user?.role,
   ]);
 
   const fetchEvents = async () => {
@@ -88,6 +91,7 @@ const EventsPage = () => {
       setError(error.message);
     } finally {
       setLoading(false);
+      setInitialLoad(false); // Clear initial load state after first fetch
     }
   };
 
@@ -207,7 +211,8 @@ const EventsPage = () => {
     );
   };
 
-  if (loading && events.length === 0) {
+  // Show loading state only on first load or when no events are available
+  if ((loading || initialLoad) && events.length === 0) {
     return (
       <Container className="py-5">
         <div className="text-center">

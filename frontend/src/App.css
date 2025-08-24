@@ -11,6 +11,15 @@
   --black: #000000;
 }
 
+/* Dark mode overrides */
+[data-bs-theme="dark"] {
+  --primary-color: #f8b700;
+  --primary-dark: #ffc721;
+  --text-dark: #f8f9fa;
+  --text-light: #adb5bd;
+  color-scheme: dark;
+}
+
 /* Global Styles */
 body {
   overflow-x: hidden;
@@ -74,6 +83,15 @@ body {
   border: none;
   border-radius: 12px;
   overflow: hidden;
+}
+
+[data-bs-theme="dark"] .event-card {
+  background-color: var(--bs-dark);
+  border: 1px solid var(--bs-dark-border-subtle);
+}
+
+[data-bs-theme="dark"] .event-card .text-muted {
+  color: var(--bs-secondary-text) !important;
 }
 
 .event-card:hover {

@@ -1,21 +1,21 @@
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
 class AuthService {
   // Register a new user
   async register(userData) {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(userData),
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
+        throw new Error(data.message || "Registration failed");
       }
 
       return data;
@@ -28,17 +28,17 @@ class AuthService {
   async login(email, password) {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        throw new Error(data.message || "Login failed");
       }
 
       return data;
@@ -52,21 +52,21 @@ class AuthService {
     try {
       const token = this.getToken();
       if (!token) {
-        throw new Error('No token found');
+        throw new Error("No token found");
       }
 
       const response = await fetch(`${API_BASE_URL}/auth/profile`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to get profile');
+        throw new Error(data.message || "Failed to get profile");
       }
 
       return data;
@@ -80,22 +80,22 @@ class AuthService {
     try {
       const token = this.getToken();
       if (!token) {
-        throw new Error('No token found');
+        throw new Error("No token found");
       }
 
       const response = await fetch(`${API_BASE_URL}/auth/profile`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(profileData),
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to update profile');
+        throw new Error(data.message || "Failed to update profile");
       }
 
       return data;
@@ -109,22 +109,22 @@ class AuthService {
     try {
       const token = this.getToken();
       if (!token) {
-        throw new Error('No token found');
+        throw new Error("No token found");
       }
 
       const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ currentPassword, newPassword }),
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to change password');
+        throw new Error(data.message || "Failed to change password");
       }
 
       return data;
@@ -139,15 +139,15 @@ class AuthService {
       const token = this.getToken();
       if (token) {
         await fetch(`${API_BASE_URL}/auth/logout`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         });
       }
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     } finally {
       this.clearAuth();
     }
@@ -155,24 +155,24 @@ class AuthService {
 
   // Token management
   setToken(token) {
-    localStorage.setItem('eventify_token', token);
+    localStorage.setItem("eventify_token", token);
   }
 
   getToken() {
-    return localStorage.getItem('eventify_token');
+    return localStorage.getItem("eventify_token");
   }
 
   clearAuth() {
-    localStorage.removeItem('eventify_token');
-    localStorage.removeItem('eventify_user');
+    localStorage.removeItem("eventify_token");
+    localStorage.removeItem("eventify_user");
   }
 
   setUser(user) {
-    localStorage.setItem('eventify_user', JSON.stringify(user));
+    localStorage.setItem("eventify_user", JSON.stringify(user));
   }
 
   getUser() {
-    const user = localStorage.getItem('eventify_user');
+    const user = localStorage.getItem("eventify_user");
     return user ? JSON.parse(user) : null;
   }
 
@@ -186,7 +186,7 @@ class AuthService {
     if (!token) return true;
 
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
+      const payload = JSON.parse(atob(token.split(".")[1]));
       return payload.exp * 1000 < Date.now();
     } catch (error) {
       return true;

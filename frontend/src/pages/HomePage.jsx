@@ -16,7 +16,7 @@ function HomePage() {
   const [registeredEvents, setRegisteredEvents] = useState(new Set());
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  
+
   // ChatGPT related states
   const [messages, setMessages] = useState([]);
   const [userMessage, setUserMessage] = useState("");
@@ -30,20 +30,23 @@ function HomePage() {
       image: HeroImage,
       title: "Let's Explore",
       subtitle: "Search for events",
-      tagline: "Eventify lightens - your go-to platform for organizing and joining university events together."
+      tagline:
+        "Eventify lightens - your go-to platform for organizing and joining university events together.",
     },
     {
       image: StudentImage,
       title: "Connect with Peers",
       subtitle: "Join student communities",
-      tagline: "Find like-minded students and participate in events that match your interests."
+      tagline:
+        "Find like-minded students and participate in events that match your interests.",
     },
     {
       image: WebImage,
       title: "Web Platform",
       subtitle: "Access anywhere, anytime",
-      tagline: "Our responsive web platform works seamlessly on all your devices."
-    }
+      tagline:
+        "Our responsive web platform works seamlessly on all your devices.",
+    },
   ];
 
   // FAQ data
@@ -55,9 +58,9 @@ function HomePage() {
         "Where's my event located?",
         "How do I create an event?",
         "Can I join events as a guest?",
-        "How do I find events near me?"
-      ]
-    }
+        "How do I find events near me?",
+      ],
+    },
   ];
 
   const fetchRegisteredEvents = async () => {
@@ -79,7 +82,7 @@ function HomePage() {
       try {
         setLoading(true);
         setError(null);
-        const response = await eventService.getUpcomingEvents({ limit: 3 }); 
+        const response = await eventService.getUpcomingEvents({ limit: 3 });
         setEvents(response.data.events);
       } catch (err) {
         setError(err.message || "Failed to fetch events.");
@@ -99,10 +102,9 @@ function HomePage() {
     const interval = setInterval(() => {
       setCurrentSlide((prevSlide) => (prevSlide + 1) % heroSlides.length);
     }, 5000);
-    
+
     return () => clearInterval(interval);
   }, [heroSlides.length]);
-
 
   const handleSendMessage = async () => {
     if (userMessage.trim() === "") return;
@@ -114,19 +116,26 @@ function HomePage() {
     setIsLoadingResponse(true);
 
     try {
-      
-      const response = await axios.post("http://localhost:3001/api/chatgpt/chat", {
-        prompt: userMessage,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/chatgpt/chat`,
+        {
+          prompt: userMessage,
+        }
+      );
 
-    
-      setMessages([...newMessages, { sender: "chatgpt", text: response.data.response }]);
+      setMessages([
+        ...newMessages,
+        { sender: "chatgpt", text: response.data.response },
+      ]);
     } catch (error) {
       console.error("Error:", error.response || error.message);
-      setMessages([...newMessages, { 
-        sender: "chatgpt", 
-        text: "Sorry, I'm having trouble connecting right now. Please try again later." 
-      }]);
+      setMessages([
+        ...newMessages,
+        {
+          sender: "chatgpt",
+          text: "Sorry, I'm having trouble connecting right now. Please try again later.",
+        },
+      ]);
     } finally {
       setIsLoadingResponse(false);
     }
@@ -137,9 +146,8 @@ function HomePage() {
     setUserMessage(question);
   };
 
- 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleSendMessage();
     }
   };
@@ -542,32 +550,37 @@ function HomePage() {
             </div>
             <div style={homeStyles.chatBody}>
               <div style={homeStyles.chatIntro}>
-                <strong>AI Assistant</strong><br />
+                <strong>AI Assistant</strong>
+                <br />
                 Hi! I'm here to help with any questions about events.
               </div>
-              
+
               <div style={homeStyles.faqSection}>
                 <h3 style={homeStyles.faqTitle}>Quick Questions</h3>
                 <ul style={homeStyles.faqList}>
                   {faqCategories[0].questions.map((question, qIndex) => (
-                    <li 
-                      key={qIndex} 
+                    <li
+                      key={qIndex}
                       style={homeStyles.faqItem}
                       onClick={() => handleFAQClick(question)}
-                      onMouseOver={(e) => e.target.style.color = "#f8b700"}
-                      onMouseOut={(e) => e.target.style.color = "#444"}
+                      onMouseOver={(e) => (e.target.style.color = "#f8b700")}
+                      onMouseOut={(e) => (e.target.style.color = "#444")}
                     >
                       {question}
                     </li>
                   ))}
                 </ul>
               </div>
-              
+
               <div style={homeStyles.chatMessages}>
                 {messages.map((msg, index) => (
-                  <div 
-                    key={index} 
-                    style={msg.sender === "user" ? homeStyles.userMessage : homeStyles.chatGptMessage}
+                  <div
+                    key={index}
+                    style={
+                      msg.sender === "user"
+                        ? homeStyles.userMessage
+                        : homeStyles.chatGptMessage
+                    }
                   >
                     {msg.text}
                   </div>
@@ -578,7 +591,7 @@ function HomePage() {
                   </div>
                 )}
               </div>
-              
+
               <div style={homeStyles.chatInputContainer}>
                 <input
                   type="text"
@@ -598,9 +611,7 @@ function HomePage() {
                 </button>
               </div>
             </div>
-            <div style={homeStyles.chatFooter}>
-              Powered by OpenAI GPT
-            </div>
+            <div style={homeStyles.chatFooter}>Powered by OpenAI GPT</div>
           </>
         ) : (
           <div style={homeStyles.chatButton} onClick={toggleChat}>
@@ -613,12 +624,25 @@ function HomePage() {
         <div style={homeStyles.container}>
           {/* Left Side - Text Content */}
           <div style={homeStyles.leftContent}>
-            <h1 style={homeStyles.heroTitle}>{heroSlides[currentSlide].title}</h1>
-            <h2 style={homeStyles.heroSubtitle}>{heroSlides[currentSlide].subtitle}</h2>
+            <h1 style={homeStyles.heroTitle}>
+              {heroSlides[currentSlide].title}
+            </h1>
+            <h2 style={homeStyles.heroSubtitle}>
+              {heroSlides[currentSlide].subtitle}
+            </h2>
             <p style={homeStyles.heroTagline}>
-              {heroSlides[currentSlide].tagline.split('lightens').map((part, i) => 
-                i === 0 ? part : <React.Fragment key={i}><strong style={{color: "#f8b700"}}>lightens</strong>{part}</React.Fragment>
-              )}
+              {heroSlides[currentSlide].tagline
+                .split("lightens")
+                .map((part, i) =>
+                  i === 0 ? (
+                    part
+                  ) : (
+                    <React.Fragment key={i}>
+                      <strong style={{ color: "#f8b700" }}>lightens</strong>
+                      {part}
+                    </React.Fragment>
+                  )
+                )}
             </p>
 
             <div style={homeStyles.searchContainer}>
@@ -630,7 +654,9 @@ function HomePage() {
                 />
                 <button
                   style={homeStyles.searchButton}
-                  onMouseOver={(e) => handleMouseOver(e, homeStyles.searchButtonHover)}
+                  onMouseOver={(e) =>
+                    handleMouseOver(e, homeStyles.searchButtonHover)
+                  }
                   onMouseOut={(e) => handleMouseOut(e, homeStyles.searchButton)}
                 >
                   Search
@@ -642,7 +668,9 @@ function HomePage() {
               <Link
                 to="/events"
                 style={homeStyles.ctaPrimary}
-                onMouseOver={(e) => handleMouseOver(e, homeStyles.ctaPrimaryHover)}
+                onMouseOver={(e) =>
+                  handleMouseOver(e, homeStyles.ctaPrimaryHover)
+                }
                 onMouseOut={(e) => handleMouseOut(e, homeStyles.ctaPrimary)}
               >
                 Browse Events
@@ -650,7 +678,9 @@ function HomePage() {
               <Link
                 to="/register"
                 style={homeStyles.ctaSecondary}
-                onMouseOver={(e) => handleMouseOver(e, homeStyles.ctaSecondaryHover)}
+                onMouseOver={(e) =>
+                  handleMouseOver(e, homeStyles.ctaSecondaryHover)
+                }
                 onMouseOut={(e) => handleMouseOut(e, homeStyles.ctaSecondary)}
               >
                 Get Started
@@ -666,11 +696,15 @@ function HomePage() {
               style={homeStyles.heroImage}
             />
             <div style={homeStyles.arrowFeature}>
-              <span style={{ fontSize: "2rem", color: "#000", fontWeight: "bold" }}>→</span>
+              <span
+                style={{ fontSize: "2rem", color: "#000", fontWeight: "bold" }}
+              >
+                →
+              </span>
             </div>
           </div>
         </div>
-        
+
         {/* Slider dots */}
         <div style={homeStyles.sliderDots}>
           {heroSlides.map((_, index) => (
@@ -678,7 +712,7 @@ function HomePage() {
               key={index}
               style={{
                 ...homeStyles.dot,
-                ...(index === currentSlide ? homeStyles.activeDot : {})
+                ...(index === currentSlide ? homeStyles.activeDot : {}),
               }}
               onClick={() => goToSlide(index)}
             />
@@ -687,7 +721,7 @@ function HomePage() {
       </section>
 
       <section style={homeStyles.featuredEvents}>
-        <div style={{...homeStyles.container, flexDirection: 'column'}}>
+        <div style={{ ...homeStyles.container, flexDirection: "column" }}>
           <h2 style={homeStyles.sectionTitle}>Popular Events</h2>
           <div style={homeStyles.eventGrid}>
             {loading ? (

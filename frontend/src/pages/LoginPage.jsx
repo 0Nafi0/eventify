@@ -1,13 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Form, Button, Card, ToggleButtonGroup, ToggleButton, Alert, Spinner } from 'react-bootstrap';
-import { useAuth } from '../context/AuthContext';
-import logo from '../assets/images/logo.png';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import {
+  Form,
+  Button,
+  Card,
+  ToggleButtonGroup,
+  ToggleButton,
+  Alert,
+  Spinner,
+} from "react-bootstrap";
+import { useAuth } from "../context/AuthContext";
+import logo from "../assets/images/logo.png";
 
 function LoginPage() {
-  const [role, setRole] = useState('student');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [role, setRole] = useState("student");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -18,7 +26,7 @@ function LoginPage() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      const from = location.state?.from?.pathname || '/';
+      const from = location.state?.from?.pathname || "/";
       navigate(from, { replace: true });
     }
   }, [isAuthenticated, navigate, location]);
@@ -37,12 +45,12 @@ function LoginPage() {
 
   const onChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'email') setEmail(value);
-    if (name === 'password') setPassword(value);
-    
+    if (name === "email") setEmail(value);
+    if (name === "password") setPassword(value);
+
     // Clear field-specific error when user types
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -50,15 +58,15 @@ function LoginPage() {
     const newErrors = {};
 
     if (!email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = "Please enter a valid email address";
     }
 
     if (!password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = "Password must be at least 6 characters";
     }
 
     setErrors(newErrors);
@@ -67,7 +75,7 @@ function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -75,10 +83,10 @@ function LoginPage() {
     try {
       setIsSubmitting(true);
       await login(email, password);
-      
+
       // Login successful - redirect will happen in useEffect
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       // Error is already set in context
     } finally {
       setIsSubmitting(false);
@@ -110,17 +118,17 @@ function LoginPage() {
             onChange={handleRoleChange}
             className="w-100 mb-3"
           >
-            <ToggleButton 
-              id="student-btn" 
-              value="student" 
-              variant={role === 'student' ? "success" : "outline-success"}
+            <ToggleButton
+              id="student-btn"
+              value="student"
+              variant={role === "student" ? "success" : "outline-success"}
             >
               Student
             </ToggleButton>
-            <ToggleButton 
-              id="admin-btn" 
-              value="club_admin" 
-              variant={role === 'club_admin' ? "success" : "outline-success"}
+            <ToggleButton
+              id="admin-btn"
+              value="club_admin"
+              variant={role === "club_admin" ? "success" : "outline-success"}
             >
               Club Admin
             </ToggleButton>
@@ -160,9 +168,9 @@ function LoginPage() {
               </Form.Control.Feedback>
             </Form.Group>
 
-            <Button 
-              type="submit" 
-              className="btn-cta w-100" 
+            <Button
+              type="submit"
+              className="btn-cta w-100"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
@@ -178,7 +186,7 @@ function LoginPage() {
                   Signing In...
                 </>
               ) : (
-                `Sign In as ${role === 'student' ? 'Student' : 'Club Admin'}`
+                `Sign In as ${role === "student" ? "Student" : "Club Admin"}`
               )}
             </Button>
           </Form>
@@ -186,7 +194,7 @@ function LoginPage() {
           {/* Bottom Links */}
           <div className="bottom-links mt-3">
             <p>
-              Don't have an account?{' '}
+              Don't have an account?{" "}
               <Link to="/register" className="footerLink">
                 Sign Up
               </Link>
@@ -200,21 +208,21 @@ function LoginPage() {
 
 const styles = {
   container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    backgroundColor: '#f8f9fa',
-    padding: '20px',
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+    backgroundColor: "var(--bs-body-bg)",
+    padding: "20px",
   },
   logo: {
-    width: '100px',
-    marginBottom: '10px',
+    width: "100px",
+    marginBottom: "10px",
   },
   subtitle: {
-    color: '#555',
-    fontSize: '15px',
-    marginTop: '5px',
+    color: "var(--bs-body-color)",
+    fontSize: "15px",
+    marginTop: "5px",
   },
 };
 
