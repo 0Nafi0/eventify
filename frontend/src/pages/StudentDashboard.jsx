@@ -18,10 +18,10 @@ function StudentDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (activeTab === 'events') {
+    if (user && user.role === 'student') {
       fetchRegisteredEvents();
     }
-  }, [activeTab]);
+  }, [user]);
 
   const fetchRegisteredEvents = async () => {
     try {
