@@ -40,19 +40,18 @@ Eventify provides a user-friendly platform for university clubs to manage and at
 - View Event Attendees: Access a list of students registered for each event.
 - Admin Dashboard: Monitor event stats, attendee counts, and event popularity.
 
-
 ---
 
 ## Tech Stack
 
 Frontend:
+
 - React
-- TailwindCSS
 - Bootstrap 5
 - Axios
-- OpenAI API 
 
 Backend:
+
 - Node.js
 - Express.js
 - MongoDB
@@ -60,6 +59,7 @@ Backend:
 - JWT Authentication
 
 Deployment:
+
 - Vercel (Frontend)
 - Render (Backend)
 
@@ -107,20 +107,14 @@ npm run dev
 - Dark Mode/Light Mode Toggle:Switch between dark and light themes.
 - Admin Analytics Dashboard: View event statistics and attendee data.
 
-
-
 ## Deployment
-
-
-
-
 
 ## Contributing
 
 Contributions are welcome! To contribute:
+
 1. Fork the repository.
 2. Create a new branch (`git checkout -b feature/your-feature`).
 3. Commit your changes (`git commit -m 'Add new feature'`).
 4. Push to your branch (`git push origin feature/your-feature`).
 5. Open a pull request.
-
