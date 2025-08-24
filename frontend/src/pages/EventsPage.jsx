@@ -216,13 +216,13 @@ const EventsPage = () => {
   return (
     <Container className="py-5">
       {/* Header */}
-      <Row className="mb-4">
-        <Col>
-          <h1 className="display-5 fw-bold text-center mb-3">
-            <Calendar className="me-3 text-primary" />
+      <Row className="mb-4 py-3">
+        <Col xs={12} className="text-center">
+          <h1 className="display-5 fw-bold mb-3">
+            <Calendar className="me-2 text-primary d-none d-sm-inline" />
             Upcoming Events
           </h1>
-          <p className="text-muted text-center">
+          <p className="text-muted">
             Discover and register for exciting university events
           </p>
         </Col>
@@ -284,9 +284,9 @@ const EventsPage = () => {
       {/* Events Grid */}
       {events.length > 0 ? (
         <>
-          <Row>
+          <Row className="event-grid g-4">
             {events.map((event) => (
-              <Col key={event._id} lg={4} md={6} className="mb-4">
+              <Col key={event._id} xs={12} sm={6} lg={4}>
                 <EventCard
                   event={event}
                   onRegister={handleRegister}
