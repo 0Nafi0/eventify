@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import EventCard from "../components/EventCard.jsx";
 import { Link } from "react-router-dom";
 import HeroImage from "../assets/images/iron_man.jpg";
@@ -23,6 +23,9 @@ function HomePage() {
   const [isLoadingResponse, setIsLoadingResponse] = useState(false);
 
   const { isAuthenticated, user } = useAuth();
+
+  // Create a ref for the events section
+  const eventsSectionRef = useRef(null);
 
   // Hero slider data
   const heroSlides = [
@@ -103,6 +106,10 @@ function HomePage() {
     return () => clearInterval(interval);
   }, [heroSlides.length]);
 
+  // Function to scroll to events section
+  const scrollToEvents = () => {
+    eventsSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const handleSendMessage = async () => {
     if (userMessage.trim() === "") return;
@@ -372,7 +379,7 @@ function HomePage() {
     chatIntro: {
       marginBottom: "15px",
       fontSize: "14px",
-      color: "#666",
+      color: "var(--bs-body-color)",
     },
     faqSection: {
       marginTop: "10px",
@@ -647,14 +654,14 @@ function HomePage() {
               >
                 Browse Events
               </Link>
-              <Link
-                to="/register"
+              <button
+                onClick={scrollToEvents}
                 style={homeStyles.ctaSecondary}
                 onMouseOver={(e) => handleMouseOver(e, homeStyles.ctaSecondaryHover)}
                 onMouseOut={(e) => handleMouseOut(e, homeStyles.ctaSecondary)}
               >
                 Get Started
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -686,7 +693,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section style={homeStyles.featuredEvents}>
+      <section ref={eventsSectionRef} id="events-section" style={homeStyles.featuredEvents}>
         <div style={{...homeStyles.container, flexDirection: 'column'}}>
           <h2 style={homeStyles.sectionTitle}>Popular Events</h2>
           <div style={homeStyles.eventGrid}>

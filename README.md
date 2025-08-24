@@ -7,9 +7,8 @@ Eventify is a comprehensive event management platform tailored for university cl
 ## Table of Contents
 
 - [Overview](#overview)
-- [Features](#features)
-  - [Student Features](#student-features)
-  - [Admin Features](#admin-features)
+- [Features](#features) - [Student Features](#student-features)
+- [Admin Features](#admin-features)
 - [Tech Stack](#tech-stack)
 - [Installation](#installation)
 - [Usage](#usage)

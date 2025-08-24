@@ -16,6 +16,9 @@ import eventService from "../services/eventService";
 import { useAuth } from "../context/AuthContext";
 
 const EventsPage = () => {
+  // ✅ Move useAuth() to the top of the component
+  const { isAuthenticated, user } = useAuth();
+
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,8 +35,6 @@ const EventsPage = () => {
       setRegisteredEvents(new Set());
     }
   }, [isAuthenticated]);
-
-  const { isAuthenticated, user } = useAuth();
 
   const sortOptions = [
     { value: "date-asc", label: "Date (Earliest First)" },
